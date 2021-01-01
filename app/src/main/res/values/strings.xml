@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Archeological Fieldwork</string>
     <string name="change_site_image">Site Image</string>
+    <string name="select_site_image">Select Image</string>
 </resources>
