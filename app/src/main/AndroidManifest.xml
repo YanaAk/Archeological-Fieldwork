@@ -10,8 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ArcheologicalFieldwork">
-        <activity android:name=".views.sitelist.SiteListView"></activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".views.sitelist.SiteListView">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
