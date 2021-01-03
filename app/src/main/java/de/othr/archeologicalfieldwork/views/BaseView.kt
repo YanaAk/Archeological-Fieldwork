@@ -5,11 +5,12 @@ import android.os.Parcelable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import de.othr.archeologicalfieldwork.model.Site
+import de.othr.archeologicalfieldwork.views.site.SiteView
 import de.othr.archeologicalfieldwork.views.sitelist.SiteListView
 import org.jetbrains.anko.AnkoLogger
 
 enum class VIEW {
-    LIST
+    LIST, SITE
 }
 
 open abstract class BaseView() : AppCompatActivity(), AnkoLogger {
@@ -21,6 +22,7 @@ open abstract class BaseView() : AppCompatActivity(), AnkoLogger {
 
         when (view) {
             VIEW.LIST -> intent = Intent(this, SiteListView::class.java)
+            VIEW.SITE -> intent = Intent(this, SiteView::class.java)
         }
 
         if (key != "") {
@@ -59,7 +61,7 @@ open abstract class BaseView() : AppCompatActivity(), AnkoLogger {
     }
 
     open fun showSite(site: Site) {}
-    open fun showSites(Site: List<Site>) {}
+    open fun showSites(sites: List<Site>) {}
     open fun showProgress() {}
     open fun hideProgress() {}
 }
