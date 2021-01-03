@@ -71,6 +71,9 @@ class SiteView : BaseView(), AnkoLogger {
             R.id.item_delete -> {
                 presenter.doDelete(site)
             }
+            R.id.item_cancel -> {
+                presenter.doCancel()
+            }
         }
 
         return super.onOptionsItemSelected(item)
