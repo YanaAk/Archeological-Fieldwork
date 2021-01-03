@@ -33,13 +33,14 @@ class SiteView : BaseView(), AnkoLogger {
         siteName.setText(site.name)
         siteDescription.setText(site.description)
         this.updateImage(site.image)
+        this.site = site
     }
 
     fun updateImage(image: String) {
-        site.image = image
-        siteImage.setImageBitmap(readImageFromPath(this, site.image))
+        this.site.image = image
+        siteImage.setImageBitmap(readImageFromPath(this, this.site.image))
 
-        if (site.image != null) {
+        if (this.site.image != null) {
             chooseImage.setText(R.string.change_site_image)
         }
     }
@@ -47,7 +48,7 @@ class SiteView : BaseView(), AnkoLogger {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_site, menu)
 
-        if (site.name.isBlank()) {
+        if (this.site.name.isBlank()) {
             // new site
             val deleteButton = menu.findItem(R.id.item_delete)
             deleteButton.isVisible = false

@@ -8,16 +8,34 @@ import de.othr.archeologicalfieldwork.views.BasePresenter
 
 class SitePresenter (view: SiteView) : BasePresenter(view) {
 
+    private var edit = false
     private val IMAGE_REQUEST = 1
 
     private var siteView: SiteView = view
 
     init {
         app = view.application as MainApp
+
+        if (view.intent.hasExtra("site_edit")) {
+            edit = true
+            val site = view.intent.extras?.getParcelable<Site>("site_edit")!!
+            view.showSite(site)
+        }
     }
 
     fun doAddOrSave(site: Site) {
-        app.sites.add(site)
+        if (!edit) {
+            site.id = app.sitesCounter.getAndIncrement()
+            app.sites.add(site)
+        } else {
+            val foundSite = app.sites.find { s -> s.id == site.id }
+
+            if (foundSite != null) {
+                foundSite.name = site.name
+                foundSite.description = site.description
+                foundSite.image = site.image
+            }
+        }
 
         view?.finish()
     }

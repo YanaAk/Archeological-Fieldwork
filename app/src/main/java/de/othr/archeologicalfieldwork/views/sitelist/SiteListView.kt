@@ -49,6 +49,7 @@ class SiteListView : BaseView(), SiteListener, AnkoLogger {
 
     override fun onSiteClick(site: Site) {
         info("Site $site clicked")
+        presenter.doEditSite(site)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
