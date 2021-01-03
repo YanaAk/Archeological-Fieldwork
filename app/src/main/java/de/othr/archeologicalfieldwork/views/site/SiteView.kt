@@ -61,6 +61,9 @@ class SiteView : BaseView(), AnkoLogger {
                     presenter.doAddOrSave(site)
                 }
             }
+            R.id.item_delete -> {
+                presenter.doDelete(site)
+            }
         }
 
         return super.onOptionsItemSelected(item)

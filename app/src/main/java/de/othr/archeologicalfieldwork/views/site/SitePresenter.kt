@@ -5,7 +5,6 @@ import de.othr.archeologicalfieldwork.helper.showImagePicker
 import de.othr.archeologicalfieldwork.main.MainApp
 import de.othr.archeologicalfieldwork.model.Site
 import de.othr.archeologicalfieldwork.views.BasePresenter
-import de.othr.archeologicalfieldwork.views.BaseView
 
 class SitePresenter (view: SiteView) : BasePresenter(view) {
 
@@ -27,6 +26,11 @@ class SitePresenter (view: SiteView) : BasePresenter(view) {
         view?.let {
             showImagePicker(view!!, IMAGE_REQUEST)
         }
+    }
+
+    fun doDelete(site: Site) {
+        app.sites.remove(site)
+        view?.finish()
     }
 
     fun doCancel() {
