@@ -47,6 +47,12 @@ class SiteView : BaseView(), AnkoLogger {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_site, menu)
 
+        if (site.name.isBlank()) {
+            // new site
+            val deleteButton = menu.findItem(R.id.item_delete)
+            deleteButton.isVisible = false
+        }
+
         return super.onCreateOptionsMenu(menu)
     }
 
