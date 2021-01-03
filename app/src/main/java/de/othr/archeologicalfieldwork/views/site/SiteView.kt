@@ -33,15 +33,18 @@ class SiteView : BaseView(), AnkoLogger {
     override fun showSite(site: Site) {
         siteName.setText(site.name)
         siteDescription.setText(site.description)
-        this.updateImage(site.image)
+        this.updateImages(site.images)
         this.site = site
     }
 
-    fun updateImage(image: String) {
-        this.site.image = image
-        siteImage.setImageBitmap(readImageFromPath(this, this.site.image))
+    fun updateImages(images: List<String>) {
+        this.site.images = images
 
-        if (this.site.image != null) {
+        for (img in images) {
+            siteImage.setImageBitmap(readImageFromPath(this, img))
+        }
+
+        if (this.site.images != null) {
             chooseImage.setText(R.string.change_site_image)
         }
     }

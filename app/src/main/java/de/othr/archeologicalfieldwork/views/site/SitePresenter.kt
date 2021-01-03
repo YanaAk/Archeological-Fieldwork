@@ -33,7 +33,7 @@ class SitePresenter (view: SiteView) : BasePresenter(view) {
             if (foundSite != null) {
                 foundSite.name = site.name
                 foundSite.description = site.description
-                foundSite.image = site.image
+                foundSite.images = site.images
             }
         }
 
@@ -58,7 +58,18 @@ class SitePresenter (view: SiteView) : BasePresenter(view) {
     override fun doActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         when (requestCode) {
             IMAGE_REQUEST -> {
-                siteView?.updateImage(data.data.toString())
+                var images = ArrayList<String>()
+
+                if(data.clipData != null) {
+                    for (i in 0 until data.clipData!!.itemCount) {
+                        var image = data.clipData!!.getItemAt(i).uri.toString()
+                        images.add(image)
+                    }
+                } else if(data.data != null) {
+                    images.add(data.data.toString())
+                }
+
+                siteView?.updateImages(images)
             }
         }
     }
