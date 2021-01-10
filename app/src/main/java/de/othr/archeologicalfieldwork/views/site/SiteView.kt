@@ -4,16 +4,22 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.recyclerview.widget.LinearLayoutManager
 import de.othr.archeologicalfieldwork.R
 import de.othr.archeologicalfieldwork.helper.readImageFromPath
 import de.othr.archeologicalfieldwork.model.Site
 import de.othr.archeologicalfieldwork.views.BaseView
+import de.othr.archeologicalfieldwork.views.site.images.SiteImagesAdapter
+import de.othr.archeologicalfieldwork.views.site.images.SiteImagesListener
+import de.othr.archeologicalfieldwork.views.sitelist.SiteAdapter
 import kotlinx.android.synthetic.main.activity_site.*
 import kotlinx.android.synthetic.main.activity_site.siteDescription
+import kotlinx.android.synthetic.main.activity_site_list_view.*
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.info
 import org.jetbrains.anko.toast
 
-class SiteView : BaseView(), AnkoLogger {
+class SiteView : BaseView(), SiteImagesListener, AnkoLogger {
 
     lateinit var presenter: SitePresenter
     var site = Site()
@@ -27,6 +33,8 @@ class SiteView : BaseView(), AnkoLogger {
 
         presenter = initPresenter (SitePresenter(this)) as SitePresenter
 
+        val layoutManager = LinearLayoutManager(this)
+        site_images_recycler.layoutManager = layoutManager
         chooseImage.setOnClickListener { presenter.doSelectImage() }
     }
 
@@ -40,9 +48,8 @@ class SiteView : BaseView(), AnkoLogger {
     fun updateImages(images: List<String>) {
         this.site.images = images
 
-        for (img in images) {
-            siteImage.setImageBitmap(readImageFromPath(this, img))
-        }
+        site_images_recycler.adapter = SiteImagesAdapter(this.site.images, this)
+        site_images_recycler.adapter?.notifyDataSetChanged()
 
         if (this.site.images != null) {
             chooseImage.setText(R.string.change_site_image)
@@ -93,5 +100,9 @@ class SiteView : BaseView(), AnkoLogger {
 
     override fun onBackPressed() {
         presenter.doCancel()
+    }
+
+    override fun onImageClick(image: String) {
+        info("Image $image clicked")
     }
 }
