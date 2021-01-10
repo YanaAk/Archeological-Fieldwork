@@ -9,17 +9,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/app_logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ArcheologicalFieldwork.Launcher">
-        <activity android:name=".views.site.SiteView"
-            android:parentActivityName=".views.sitelist.SiteListView">
-        </activity>
-        <activity android:name=".views.sitelist.SiteListView">
+        android:theme="@style/Theme.ArcheologicalFieldwork">
+        <activity android:name=".main.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            </intent-filter></activity>
+        <activity
+            android:name=".views.site.SiteView"
+            android:parentActivityName=".views.sitelist.SiteListView"></activity>
+        <activity android:name=".views.sitelist.SiteListView"></activity>
     </application>
 
 </manifest>

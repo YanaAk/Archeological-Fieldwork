@@ -17,10 +17,6 @@ class SiteListView : BaseView(), SiteListener, AnkoLogger {
     lateinit var presenter: SiteListPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Change to normal Theme - stop Launch Screen
-        setTheme(R.style.Theme_ArcheologicalFieldwork)
-
-        // Activity setup
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_site_list_view)
         setSupportActionBar(toolbar)
