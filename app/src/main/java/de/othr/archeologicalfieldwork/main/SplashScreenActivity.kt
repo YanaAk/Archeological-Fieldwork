@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import de.othr.archeologicalfieldwork.R
-import de.othr.archeologicalfieldwork.views.sitelist.SiteListView
+import de.othr.archeologicalfieldwork.views.login.LoginView
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -20,7 +20,7 @@ class SplashScreenActivity : AppCompatActivity() {
     }
 
     fun startApp() {
-        startActivity(Intent(this, SiteListView::class.java))
+        startActivity(Intent(this, LoginView::class.java))
         finish()
     }
 }
