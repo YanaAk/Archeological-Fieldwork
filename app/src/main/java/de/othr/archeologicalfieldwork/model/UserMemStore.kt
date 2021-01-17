@@ -21,10 +21,10 @@ class UserMemStore : UserStore, AnkoLogger {
     }
 
     override fun login(email: String, password: String): Boolean {
-        val user = this.users.find { u -> u.email.equals(email) }
+        val user = this.users.find { u -> u.email == email }
 
         if (user != null) {
-            if (user.password.equals(password)) {
+            if (user.password == password) {
                 this.user = user
                 info("Login successful: $email")
 
@@ -46,7 +46,7 @@ class UserMemStore : UserStore, AnkoLogger {
     }
 
     override fun signup(email: String, password: String): Boolean {
-        if (this.doesUserExist(email)) {
+        if (!this.doesUserExist(email)) {
             val id = this.userCounter.getAndIncrement()
             val fakeUser = User(id, email, password)
             info("Signup successful: $id : $email")
@@ -64,7 +64,7 @@ class UserMemStore : UserStore, AnkoLogger {
 
         if (user != null) {
             this.users.remove(user)
-            info("Deleted user ${user?.id} : ${user?.email}")
+            info("Deleted user ${user?.id} : ${user.email}")
 
             return true
         } else {
@@ -75,6 +75,6 @@ class UserMemStore : UserStore, AnkoLogger {
     }
 
     override fun doesUserExist(email: String): Boolean {
-        return this.users.find { u -> u.email.equals(email) } == null
+        return this.users.find { u -> u.email == email } != null
     }
 }
