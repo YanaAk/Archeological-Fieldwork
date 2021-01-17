@@ -34,6 +34,7 @@ class SitePresenter (view: SiteView) : BasePresenter(view) {
                 foundSite.name = site.name
                 foundSite.description = site.description
                 foundSite.images = site.images
+                foundSite.notes = site.notes
             }
         }
 

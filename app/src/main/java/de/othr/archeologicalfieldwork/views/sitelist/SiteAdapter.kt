@@ -8,6 +8,8 @@ import de.othr.archeologicalfieldwork.R
 import de.othr.archeologicalfieldwork.helper.readImageFromPath
 import de.othr.archeologicalfieldwork.model.Site
 import kotlinx.android.synthetic.main.card_site.view.*
+import kotlinx.android.synthetic.main.card_site.view.siteDescription
+import kotlinx.android.synthetic.main.card_site.view.siteName
 
 class SiteAdapter constructor(
         private var sites: List<Site>,

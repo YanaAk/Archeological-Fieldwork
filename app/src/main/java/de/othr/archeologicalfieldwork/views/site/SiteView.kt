@@ -41,6 +41,7 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger {
     override fun showSite(site: Site) {
         siteName.setText(site.name)
         siteDescription.setText(site.description)
+        siteNotes.setText(site.notes)
         this.updateImages(site.images)
         this.site = site
     }
@@ -76,6 +77,7 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger {
                 } else {
                     site.name = siteName.text.toString()
                     site.description = siteDescription.text.toString()
+                    site.notes = siteNotes.text.toString()
                     presenter.doAddOrSave(site)
                 }
             }
