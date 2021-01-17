@@ -1,7 +1,6 @@
 package de.othr.archeologicalfieldwork.views.login
 
 import android.os.Bundle
-import androidx.annotation.StringRes
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View

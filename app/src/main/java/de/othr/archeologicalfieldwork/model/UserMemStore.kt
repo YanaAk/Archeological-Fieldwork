@@ -21,7 +21,7 @@ class UserMemStore : UserStore, AnkoLogger {
     }
 
     override fun login(email: String, password: String): Boolean {
-        val user = this.users.find { u -> u.email == email }
+        val user = this.users.find { u -> u.email == email.trim() }
 
         if (user != null) {
             if (user.password == password) {
@@ -75,6 +75,6 @@ class UserMemStore : UserStore, AnkoLogger {
     }
 
     override fun doesUserExist(email: String): Boolean {
-        return this.users.find { u -> u.email == email } != null
+        return this.users.find { u -> u.email == email.trim() } != null
     }
 }

@@ -11,6 +11,11 @@ open class BasePresenter(var view: BaseView?) {
 
     open fun doRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {}
 
+    fun logout() {
+        app.userStore.logout()
+        view?.navigateTo(VIEW.LOGIN)
+    }
+
     open fun onDestroy() {
         view = null
     }
