@@ -51,15 +51,21 @@ class LoginView : BaseView() {
     }
 
     fun setUsernameError() {
-        username.error = getString(R.string.invalid_username)
+        username.error = getString(R.string.invalid_email)
     }
 
     fun setPasswordError() {
         password.error = getString(R.string.invalid_password)
     }
 
-    private fun showLoginFailed(@StringRes errorString: Int) {
-        Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
+    fun setSignupError() {
+        username.error = getString(R.string.invalid_email__in_use)
+        Toast.makeText(applicationContext, getString(R.string.signup_failed), Toast.LENGTH_SHORT).show()
+    }
+
+    fun setLoginError() {
+        password.error = getString(R.string.invalid_password__wrong_password)
+        Toast.makeText(applicationContext, getString(R.string.login_failed), Toast.LENGTH_SHORT).show()
     }
 }
 

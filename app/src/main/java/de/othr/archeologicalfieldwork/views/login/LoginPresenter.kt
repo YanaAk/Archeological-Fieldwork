@@ -19,14 +19,14 @@ class LoginPresenter(view: LoginView) : BasePresenter(view) {
             if (app.userStore.login(email, password)) {
                 navigateToStartPage()
             } else {
-                //TODO show error
+                loginView.setLoginError()
             }
         } else {
             // do signup
             if (app.userStore.signup(email, password)) {
                 navigateToStartPage()
             } else {
-                //TODO show error
+                loginView.setSignupError()
             }
         }
     }
