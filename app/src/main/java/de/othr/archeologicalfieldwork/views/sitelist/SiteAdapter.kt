@@ -38,7 +38,11 @@ class SiteAdapter constructor(
         fun bind(site: Site, listener: SiteListener) {
             itemView.siteName.text = site.name
             itemView.siteDescription.text = site.description
-            itemView.siteImageIcon.setImageBitmap(readImageFromPath(itemView.context, site.images.first()))
+
+            if (site.images.isNotEmpty()) {
+                itemView.siteImageIcon.setImageBitmap(readImageFromPath(itemView.context, site.images.first()))
+            }
+
             itemView.setOnClickListener { listener.onSiteClick(site) }
         }
     }
