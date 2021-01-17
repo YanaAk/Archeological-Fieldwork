@@ -48,7 +48,7 @@ class UserMemStore : UserStore, AnkoLogger {
     override fun signup(email: String, password: String): Boolean {
         if (!this.doesUserExist(email)) {
             val id = this.userCounter.getAndIncrement()
-            val fakeUser = User(id, email, password)
+            this.users.add(User(id, email, password))
             info("Signup successful: $id : $email")
 
             return true
