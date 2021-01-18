@@ -6,4 +6,5 @@ interface UserStore {
     fun signup(email: String, password: String): Boolean
     fun delete(user: User): Boolean
     fun doesUserExist(email: String): Boolean
+    fun getCurrentUser(): User?
 }

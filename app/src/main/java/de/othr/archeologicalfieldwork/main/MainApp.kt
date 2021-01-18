@@ -2,7 +2,7 @@ package de.othr.archeologicalfieldwork.main
 
 import android.app.Application
 import de.othr.archeologicalfieldwork.model.Site
-import de.othr.archeologicalfieldwork.model.UserMemStore
+import de.othr.archeologicalfieldwork.model.UserJsonStore
 import de.othr.archeologicalfieldwork.model.UserStore
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
@@ -17,7 +17,7 @@ class MainApp : Application(), AnkoLogger {
     override fun onCreate() {
         super.onCreate()
 
-        this.userStore = UserMemStore()
+        this.userStore = UserJsonStore(applicationContext)
 
         info("Application started")
     }
