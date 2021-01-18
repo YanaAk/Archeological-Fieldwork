@@ -8,6 +8,7 @@ import de.othr.archeologicalfieldwork.helper.exists
 import de.othr.archeologicalfieldwork.helper.read
 import de.othr.archeologicalfieldwork.helper.write
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.error
 import org.jetbrains.anko.info
 import org.jetbrains.anko.warn
 import java.util.concurrent.atomic.AtomicLong

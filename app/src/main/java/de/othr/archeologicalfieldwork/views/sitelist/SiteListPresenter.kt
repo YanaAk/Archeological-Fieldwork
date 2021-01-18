@@ -10,7 +10,7 @@ import org.jetbrains.anko.info
 class SiteListPresenter(view: BaseView) : BasePresenter(view), AnkoLogger {
 
     fun loadSites() {
-        view?.showSites(app.sites)
+        view?.showSites(app.siteStore.findAll())
     }
 
     fun openNewSiteActivity() {

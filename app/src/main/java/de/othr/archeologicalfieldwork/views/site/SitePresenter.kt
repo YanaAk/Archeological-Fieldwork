@@ -26,16 +26,9 @@ class SitePresenter (view: SiteView) : BasePresenter(view) {
     fun doAddOrSave(site: Site) {
         if (!edit) {
             site.id = app.sitesCounter.getAndIncrement()
-            app.sites.add(site)
+            app.siteStore.create(site)
         } else {
-            val foundSite = app.sites.find { s -> s.id == site.id }
-
-            if (foundSite != null) {
-                foundSite.name = site.name
-                foundSite.description = site.description
-                foundSite.images = site.images
-                foundSite.notes = site.notes
-            }
+            app.siteStore.update(site)
         }
 
         view?.finish()
@@ -48,7 +41,7 @@ class SitePresenter (view: SiteView) : BasePresenter(view) {
     }
 
     fun doDelete(site: Site) {
-        app.sites.remove(site)
+        app.siteStore.delete(site)
         view?.finish()
     }
 
