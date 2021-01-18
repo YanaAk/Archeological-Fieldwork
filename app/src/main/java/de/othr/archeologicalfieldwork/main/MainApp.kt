@@ -1,7 +1,7 @@
 package de.othr.archeologicalfieldwork.main
 
 import android.app.Application
-import de.othr.archeologicalfieldwork.model.SiteMemStore
+import de.othr.archeologicalfieldwork.model.SiteJsonStore
 import de.othr.archeologicalfieldwork.model.SiteStore
 import de.othr.archeologicalfieldwork.model.UserJsonStore
 import de.othr.archeologicalfieldwork.model.UserStore
@@ -19,7 +19,7 @@ class MainApp : Application(), AnkoLogger {
         super.onCreate()
 
         this.userStore = UserJsonStore(applicationContext)
-        this.siteStore = SiteMemStore()
+        this.siteStore = SiteJsonStore(applicationContext)
 
         info("Application started")
     }

@@ -13,24 +13,23 @@ import org.jetbrains.anko.info
 import org.jetbrains.anko.warn
 import java.util.concurrent.atomic.AtomicLong
 
-internal val JSON_FILE = "users.json"
-val gsonBuilder = GsonBuilder().setPrettyPrinting().create()
-val listType = object : TypeToken<ArrayList<User>>() {}.type
-
 class UserJsonStore: UserStore, AnkoLogger {
 
+    private val jsonFile = "users.json"
+    private val gsonBuilder: Gson = GsonBuilder().setPrettyPrinting().create()
+    private val listType = object : TypeToken<ArrayList<User>>() {}.type
+
     private var context: Context
-    var users = mutableListOf<User>()
+    private var users = mutableListOf<User>()
     private val userCounter = AtomicLong()
 
     var user: User? = null
         private set
 
-
     constructor (context: Context) {
         this.context = context
 
-        if (exists(context, JSON_FILE)) {
+        if (exists(context, jsonFile)) {
             deserialize()
         }
     }
@@ -80,16 +79,16 @@ class UserJsonStore: UserStore, AnkoLogger {
     }
 
     override fun delete(user: User): Boolean {
-        val user = this.users.find { u -> u.id == user.id}
+        val persistedUser = this.users.find { u -> u.id == user.id}
 
-        if (user != null) {
-            this.users.remove(user)
+        if (persistedUser != null) {
+            this.users.remove(persistedUser)
             serialize()
-            info("Deleted user ${user?.id} : ${user.email}")
+            info("Deleted user ${persistedUser .id} : ${persistedUser.email}")
 
             return true
         } else {
-            info("Tried to delete unknown user ${user?.email}")
+            info("Tried to delete unknown user ${persistedUser?.email}")
 
             return false
         }
@@ -105,13 +104,13 @@ class UserJsonStore: UserStore, AnkoLogger {
 
     private fun serialize() {
         val jsonString = gsonBuilder.toJson(this.users, listType)
-        write(context, JSON_FILE, jsonString)
+        write(context, jsonFile, jsonString)
 
         info("Saved users to file")
     }
 
     private fun deserialize() {
-        val jsonString = read(context, JSON_FILE)
+        val jsonString = read(context, jsonFile)
         this.users = Gson().fromJson(jsonString, listType)
 
         info("Read users from file")
