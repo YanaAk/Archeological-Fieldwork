@@ -38,6 +38,7 @@ class LoginView : BaseView() {
         login.setOnClickListener {
             loading.visibility = View.VISIBLE
             presenter.doLoginOrSignup(username.text.toString(), password.text.toString())
+            loading.visibility = View.INVISIBLE
         }
     }
 
