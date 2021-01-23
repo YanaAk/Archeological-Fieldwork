@@ -116,16 +116,22 @@ class UserJsonStore: UserStore, AnkoLogger {
         info("Read users from file")
     }
 
-    override fun updateUser(id: Long?, accountEmail: String, accountPassword: String) {
-        val user = this.users.find { u -> u.id == id }
+    override fun updateUser(id: Long?, accountEmail: String, accountPassword: String): UserUpdateState {
+        val user = this.users.find { u -> u.id == id } ?: return UserUpdateState.FAILURE_USER_NOT_FOUND
 
         if (user?.email == accountEmail) {
             // same email -> only change password
             user?.password = accountPassword
-        } else {
+
+            return UserUpdateState.SUCCESS
+        } else if (this.users.find {u -> u.email == accountEmail} != null){
             // change both email and password
             user?.email = accountEmail
             user?.password = accountPassword
+
+            return UserUpdateState.SUCCESS
+        } else {
+            return UserUpdateState.FAILURE_USERNAME_USED
         }
     }
 }

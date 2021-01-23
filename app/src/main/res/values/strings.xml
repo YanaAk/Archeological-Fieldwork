@@ -29,4 +29,7 @@
     <string name="settings_total_sites">Total #Sites:</string>
     <string name="settings_sites_visited">Sites visited:</string>
     <string name="menu_settings">Settings</string>
+    <string name="account_username_taken">Username already taken</string>
+    <string name="account_data_changed">Account data changed</string>
+    <string name="account_change_error">Error</string>
 </resources>
