@@ -23,4 +23,9 @@
     <string name="login_failed">Login failed</string>
     <string name="signup_failed">Signup failed</string>
     <string name="menu_logout">Logout</string>
+    <string name="settings_apply">Apply</string>
+    <string name="settingsAccountHeader">Account</string>
+    <string name="settings_statistics_header">Statistics</string>
+    <string name="settings_total_sites">Total #Sites:</string>
+    <string name="settings_sites_visited">Sites visited:</string>
 </resources>
