@@ -19,7 +19,9 @@ class SettingsPresenter(view: SettingsView) : BasePresenter(view), AnkoLogger {
     }
 
     fun getTotalNumOfVisitedSites() {
-        settingsView.setTotalNumberOfVisitedSites(0) //TODO feature/15
+        app.userStore.getCurrentUser()?.visitedSites?.let {
+            settingsView.setTotalNumberOfVisitedSites(it.size)
+        }
     }
 
     fun checkInput(inputUsername: String, inputPassword: String) {

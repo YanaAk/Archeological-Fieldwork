@@ -66,7 +66,7 @@ class UserJsonStore: UserStore, AnkoLogger {
     override fun signup(email: String, password: String): Boolean {
         if (!this.doesUserExist(email)) {
             val id = this.userCounter.getAndIncrement()
-            this.users.add(User(id, email, password))
+            this.users.add(User(id, email, password, HashMap()))
             serialize()
             info("Signup successful: $id : $email")
 
