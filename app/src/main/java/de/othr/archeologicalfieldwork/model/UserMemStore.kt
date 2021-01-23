@@ -79,4 +79,17 @@ class UserMemStore : UserStore, AnkoLogger {
     override fun getCurrentUser(): User? {
         return this.user
     }
+
+    override fun updateUser(id: Long?, accountEmail: String, accountPassword: String) {
+        val user = this.users.find { u -> u.id == id }
+
+        if (user?.email == accountEmail) {
+            // same email -> only change password
+            user?.password = accountPassword
+        } else {
+            // change both email and password
+            user?.email = accountEmail
+            user?.password = accountPassword
+        }
+    }
 }
