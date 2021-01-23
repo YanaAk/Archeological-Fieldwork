@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/app_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.ArcheologicalFieldwork">
-        <activity android:name=".views.settings.SettingsView"></activity>
+        <activity android:name=".views.settings.SettingsView"
+            android:parentActivityName=".views.sitelist.SiteListView"/>
         <activity
             android:name=".views.login.LoginView"
             android:label="@string/title_activity_login" />
