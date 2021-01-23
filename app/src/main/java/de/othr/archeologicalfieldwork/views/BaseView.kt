@@ -6,12 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import de.othr.archeologicalfieldwork.model.Site
 import de.othr.archeologicalfieldwork.views.login.LoginView
+import de.othr.archeologicalfieldwork.views.settings.SettingsView
 import de.othr.archeologicalfieldwork.views.site.SiteView
 import de.othr.archeologicalfieldwork.views.sitelist.SiteListView
 import org.jetbrains.anko.AnkoLogger
 
 enum class VIEW {
-    LIST, SITE, LOGIN, START
+    LIST, SITE, LOGIN, START, SETTINGS
 }
 
 open abstract class BaseView() : AppCompatActivity(), AnkoLogger {
@@ -26,6 +27,7 @@ open abstract class BaseView() : AppCompatActivity(), AnkoLogger {
             VIEW.LIST -> intent = Intent(this, SiteListView::class.java)
             VIEW.SITE -> intent = Intent(this, SiteView::class.java)
             VIEW.LOGIN -> intent = Intent(this, LoginView::class.java)
+            VIEW.SETTINGS -> intent = Intent(this, SettingsView::class.java)
         }
 
         if (key != "") {

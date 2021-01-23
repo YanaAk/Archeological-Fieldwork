@@ -21,4 +21,8 @@ class SiteListPresenter(view: BaseView) : BasePresenter(view), AnkoLogger {
     fun doEditSite(site: Site) {
         view?.navigateTo(VIEW.SITE, 0, "site_edit", site)
     }
+
+    fun openSettings() {
+        view?.navigateTo(VIEW.SETTINGS)
+    }
 }

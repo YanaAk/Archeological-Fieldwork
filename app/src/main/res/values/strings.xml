@@ -28,4 +28,5 @@
     <string name="settings_statistics_header">Statistics</string>
     <string name="settings_total_sites">Total #Sites:</string>
     <string name="settings_sites_visited">Sites visited:</string>
+    <string name="menu_settings">Settings</string>
 </resources>
