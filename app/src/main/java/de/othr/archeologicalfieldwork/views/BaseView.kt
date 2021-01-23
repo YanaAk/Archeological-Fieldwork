@@ -65,8 +65,6 @@ open abstract class BaseView() : AppCompatActivity(), AnkoLogger {
         basePresenter?.doRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-    open fun showSite(site: Site) {}
+    open fun showSite(site: Site, visited: Boolean) {}
     open fun showSites(sites: List<Site>) {}
-    open fun showProgress() {}
-    open fun hideProgress() {}
 }

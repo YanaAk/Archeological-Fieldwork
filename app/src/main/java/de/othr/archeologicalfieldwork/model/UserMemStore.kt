@@ -4,7 +4,10 @@ import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
 import org.jetbrains.anko.warn
+import java.util.*
 import java.util.concurrent.atomic.AtomicLong
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class UserMemStore : UserStore, AnkoLogger {
 
@@ -62,7 +65,7 @@ class UserMemStore : UserStore, AnkoLogger {
 
         if (user != null) {
             this.users.remove(user)
-            info("Deleted user ${user?.id} : ${user.email}")
+            info("Deleted user ${user.id} : ${user.email}")
 
             return true
         } else {
@@ -83,19 +86,28 @@ class UserMemStore : UserStore, AnkoLogger {
     override fun updateUser(id: Long?, accountEmail: String, accountPassword: String): UserUpdateState {
         val user = this.users.find { u -> u.id == id } ?: return UserUpdateState.FAILURE_USER_NOT_FOUND
 
-        if (user?.email == accountEmail) {
+        if (user.email == accountEmail) {
             // same email -> only change password
-            user?.password = accountPassword
+            user.password = accountPassword
 
             return UserUpdateState.SUCCESS
         } else if (this.users.find {u -> u.email == accountEmail} != null){
             // change both email and password
-            user?.email = accountEmail
-            user?.password = accountPassword
+            user.email = accountEmail
+            user.password = accountPassword
 
             return UserUpdateState.SUCCESS
         } else {
             return UserUpdateState.FAILURE_USERNAME_USED
         }
+    }
+
+    override fun addVisitedSite(id: Long) {
+        this.user?.visitedSites?.put(id, Date())
+
+    }
+
+    override fun removeVisitedSite(id: Long) {
+        this.user?.visitedSites?.remove(id)
     }
 }

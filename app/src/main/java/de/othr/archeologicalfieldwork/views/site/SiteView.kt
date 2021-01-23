@@ -6,15 +6,11 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import de.othr.archeologicalfieldwork.R
-import de.othr.archeologicalfieldwork.helper.readImageFromPath
 import de.othr.archeologicalfieldwork.model.Site
 import de.othr.archeologicalfieldwork.views.BaseView
 import de.othr.archeologicalfieldwork.views.site.images.SiteImagesAdapter
 import de.othr.archeologicalfieldwork.views.site.images.SiteImagesListener
-import de.othr.archeologicalfieldwork.views.sitelist.SiteAdapter
 import kotlinx.android.synthetic.main.activity_site.*
-import kotlinx.android.synthetic.main.activity_site.siteDescription
-import kotlinx.android.synthetic.main.activity_site_list_view.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 import org.jetbrains.anko.toast
@@ -38,10 +34,11 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger {
         chooseImage.setOnClickListener { presenter.doSelectImage() }
     }
 
-    override fun showSite(site: Site) {
+    override fun showSite(site: Site, visited: Boolean) {
         siteName.setText(site.name)
         siteDescription.setText(site.description)
         siteNotes.setText(site.notes)
+        visitedCheckBox.isChecked = visited
         this.updateImages(site.images)
         this.site = site
     }
@@ -78,7 +75,8 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger {
                     site.name = siteName.text.toString()
                     site.description = siteDescription.text.toString()
                     site.notes = siteNotes.text.toString()
-                    presenter.doAddOrSave(site)
+                    val visited = visitedCheckBox.isChecked
+                    presenter.doAddOrSave(site, visited)
                 }
             }
             R.id.item_delete -> {

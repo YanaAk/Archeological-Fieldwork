@@ -32,4 +32,5 @@
     <string name="account_username_taken">Username already taken</string>
     <string name="account_data_changed">Account data changed</string>
     <string name="account_change_error">Error</string>
+    <string name="site_checkbox_visited">Visited</string>
 </resources>

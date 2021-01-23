@@ -38,12 +38,13 @@ class SiteJsonStore : SiteStore, AnkoLogger {
         return sites.find { it.id == id }
     }
 
-    override fun create(site: Site) {
+    override fun create(site: Site): Site {
         site.id = this.siteCounter.getAndIncrement()
         this.sites.add(site)
         serialize()
 
         info("Created new site: $site")
+        return site
     }
 
     override fun update(site: Site) {

@@ -11,7 +11,9 @@ import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
 import org.jetbrains.anko.warn
+import java.util.*
 import java.util.concurrent.atomic.AtomicLong
+import kotlin.collections.HashMap
 
 class UserJsonStore: UserStore, AnkoLogger {
 
@@ -119,19 +121,35 @@ class UserJsonStore: UserStore, AnkoLogger {
     override fun updateUser(id: Long?, accountEmail: String, accountPassword: String): UserUpdateState {
         val user = this.users.find { u -> u.id == id } ?: return UserUpdateState.FAILURE_USER_NOT_FOUND
 
-        if (user?.email == accountEmail) {
+        if (user.email == accountEmail) {
             // same email -> only change password
-            user?.password = accountPassword
+            user.password = accountPassword
+            serialize()
 
             return UserUpdateState.SUCCESS
         } else if (this.users.find {u -> u.email == accountEmail} != null){
             // change both email and password
-            user?.email = accountEmail
-            user?.password = accountPassword
+            user.email = accountEmail
+            user.password = accountPassword
+            serialize()
 
             return UserUpdateState.SUCCESS
         } else {
             return UserUpdateState.FAILURE_USERNAME_USED
         }
+    }
+
+    override fun addVisitedSite(id: Long) {
+        if (this.user?.visitedSites == null) {
+            this.user?.visitedSites = HashMap()
+            this.user?.visitedSites?.put(id, Date())
+        }
+
+        serialize()
+    }
+
+    override fun removeVisitedSite(id: Long) {
+        this.user?.visitedSites?.remove(id)
+        serialize()
     }
 }

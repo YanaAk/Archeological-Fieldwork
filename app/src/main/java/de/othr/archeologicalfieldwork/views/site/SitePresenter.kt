@@ -19,16 +19,28 @@ class SitePresenter (view: SiteView) : BasePresenter(view) {
         if (view.intent.hasExtra("site_edit")) {
             edit = true
             val site = view.intent.extras?.getParcelable<Site>("site_edit")!!
-            view.showSite(site)
+            val visited = app.userStore.getCurrentUser()?.visitedSites?.contains(site.id)
+
+            if (visited == null) {
+                view.showSite(site, false)
+            } else {
+                view.showSite(site, visited)
+            }
         }
     }
 
-    fun doAddOrSave(site: Site) {
+    fun doAddOrSave(site: Site, visited: Boolean) {
         if (!edit) {
-            site.id = app.sitesCounter.getAndIncrement()
-            app.siteStore.create(site)
+            val createdSite = app.siteStore.create(site)
+            site.id = createdSite.id
         } else {
             app.siteStore.update(site)
+        }
+
+        if (visited) {
+            app.userStore.addVisitedSite(site.id)
+        } else {
+            app.userStore.removeVisitedSite(site.id)
         }
 
         view?.finish()

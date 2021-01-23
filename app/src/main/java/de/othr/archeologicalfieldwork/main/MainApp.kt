@@ -7,13 +7,11 @@ import de.othr.archeologicalfieldwork.model.UserJsonStore
 import de.othr.archeologicalfieldwork.model.UserStore
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
-import java.util.concurrent.atomic.AtomicLong
 
 class MainApp : Application(), AnkoLogger {
 
     lateinit var userStore: UserStore
     lateinit var siteStore: SiteStore
-    var sitesCounter = AtomicLong()
 
     override fun onCreate() {
         super.onCreate()

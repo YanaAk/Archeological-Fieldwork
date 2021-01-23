@@ -8,4 +8,6 @@ interface UserStore {
     fun doesUserExist(email: String): Boolean
     fun getCurrentUser(): User?
     fun updateUser(id: Long?, accountEmail: String, accountPassword: String): UserUpdateState
+    fun addVisitedSite(id: Long)
+    fun removeVisitedSite(id: Long)
 }

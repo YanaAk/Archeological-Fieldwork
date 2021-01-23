@@ -1,8 +1,8 @@
 package de.othr.archeologicalfieldwork.main
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import de.othr.archeologicalfieldwork.R
 import de.othr.archeologicalfieldwork.views.login.LoginView
 import java.util.*
