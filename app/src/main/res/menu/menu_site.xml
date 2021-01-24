@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/item_cancel"
-        android:icon="@android:drawable/ic_menu_close_clear_cancel"
-        android:title="@string/menu_cancel"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/item_mark_fav"
+        android:icon="@android:drawable/btn_star_big_off"
+        android:title="@string/menu_mark_fav"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/item_delete"
