@@ -114,4 +114,18 @@ class UserMemStore : UserStore, AnkoLogger {
     override fun removeVisitedSite(id: Long) {
         this.user?.visitedSites?.remove(id)
     }
+
+    override fun hasFavorite(site: Site): Boolean {
+        val res = this.user?.favoriteSites?.find { sid -> sid == site.id }
+
+        return res != null
+    }
+
+    override fun removeFavoriteSite(site: Site) {
+        val res = this.user?.favoriteSites?.find { sid -> sid == site.id }
+
+        if (res != null) {
+            this.user?.favoriteSites?.remove(res)
+        }
+    }
 }

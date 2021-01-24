@@ -26,6 +26,7 @@ import org.jetbrains.anko.toast
 
 class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback {
 
+    private lateinit var menu: Menu
     lateinit var presenter: SitePresenter
     var site = Site()
     lateinit var mMapView: MapView
@@ -79,12 +80,15 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_site, menu)
+        this.menu = menu
 
         if (this.site.name.isBlank()) {
             // new site
             val deleteButton = menu.findItem(R.id.item_delete)
             deleteButton.isVisible = false
         }
+
+        presenter.initMenu()
 
         return super.onCreateOptionsMenu(menu)
     }
@@ -102,9 +106,8 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback 
                     presenter.doAddOrSave(site, visited)
                 }
             }
-            R.id.item_delete -> {
-                presenter.doDelete(site)
-            }
+            R.id.item_delete -> presenter.doDelete(site)
+            R.id.item_mark_fav -> presenter.setFav(site)
         }
 
         return super.onOptionsItemSelected(item)
@@ -180,5 +183,9 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback 
     override fun onLowMemory() {
         super.onLowMemory()
         mMapView.onLowMemory()
+    }
+
+    fun hideFavSelection() {
+        menu.findItem(R.id.item_mark_fav).isVisible = false
     }
 }

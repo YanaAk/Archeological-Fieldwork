@@ -52,11 +52,9 @@ class SitePresenter(view: SiteView) : BasePresenter(view), AnkoLogger {
 
     override fun doRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (isPermissionGranted(requestCode, grantResults)) {
-            // todo get the current location
-            info("called and granted")
+            info("location granted")
         } else {
-            info("called and not granted")
-            // permissions denied, so use the default location
+            info("location not granted")
         }
     }
 
@@ -118,6 +116,12 @@ class SitePresenter(view: SiteView) : BasePresenter(view), AnkoLogger {
         }
     }
 
+    fun initMenu() {
+        if (!siteView.intent.hasExtra("site_edit")) {
+            siteView.hideFavSelection()
+        }
+    }
+
     fun initMap() {
         if (locationAccess) {
             if (((siteView.site.location.lat > 0.1f || siteView.site.location.lat < -0.1f)
@@ -170,6 +174,18 @@ class SitePresenter(view: SiteView) : BasePresenter(view), AnkoLogger {
 
         if (!edit) {
             locationService.requestLocationUpdates(locationRequest, locationCallback, null)
+        }
+    }
+
+    fun setFav(site: Site) {
+        if (app.userStore.hasFavorite(site)) {
+            app.userStore.removeFavoriteSite(site)
+
+            info("Removed favorite: ${site.id}")
+        } else {
+            app.userStore.addFavoriteSite(site.id)
+
+            info("Added favorite: ${site.id}")
         }
     }
 }

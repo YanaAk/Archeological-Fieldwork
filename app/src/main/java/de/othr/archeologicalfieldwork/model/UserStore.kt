@@ -11,4 +11,6 @@ interface UserStore {
     fun addVisitedSite(id: Long)
     fun addFavoriteSite(id: Long)
     fun removeVisitedSite(id: Long)
+    fun hasFavorite(site: Site): Boolean
+    fun removeFavoriteSite(site: Site)
 }

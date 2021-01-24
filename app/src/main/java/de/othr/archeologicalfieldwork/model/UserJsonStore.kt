@@ -171,4 +171,19 @@ class UserJsonStore: UserStore, AnkoLogger {
         this.user?.visitedSites?.remove(id)
         serialize()
     }
+
+    override fun hasFavorite(site: Site): Boolean {
+        val res = this.user?.favoriteSites?.find { sid -> sid == site.id }
+
+        return res != null
+    }
+
+    override fun removeFavoriteSite(site: Site) {
+        val res = this.user?.favoriteSites?.find { sid -> sid == site.id }
+
+        if (res != null) {
+            this.user?.favoriteSites?.remove(res)
+            serialize()
+        }
+    }
 }
