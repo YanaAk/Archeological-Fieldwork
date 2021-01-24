@@ -14,7 +14,7 @@ import de.othr.archeologicalfieldwork.views.sitelist.SiteListView
 import org.jetbrains.anko.AnkoLogger
 
 enum class VIEW {
-    LIST, SITE, LOGIN, START, SETTINGS, LOCATION, MAP
+    LIST, SITE, LOGIN, START, SETTINGS, LOCATION, MAP, LIST_FAV
 }
 
 open class BaseView() : AppCompatActivity(), AnkoLogger {
@@ -27,6 +27,7 @@ open class BaseView() : AppCompatActivity(), AnkoLogger {
         when (view) {
             VIEW.START -> navigateTo(VIEW.LIST, code, key, value)
             VIEW.LIST -> intent = Intent(this, SiteListView::class.java)
+            VIEW.LIST_FAV -> intent = Intent(this, SiteListView::class.java).putExtra("fav", true)
             VIEW.SITE -> intent = Intent(this, SiteView::class.java)
             VIEW.LOGIN -> intent = Intent(this, LoginView::class.java)
             VIEW.SETTINGS -> intent = Intent(this, SettingsView::class.java)

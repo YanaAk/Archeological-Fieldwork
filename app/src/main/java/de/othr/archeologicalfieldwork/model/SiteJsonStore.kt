@@ -78,6 +78,13 @@ class SiteJsonStore : SiteStore, AnkoLogger {
         }
     }
 
+    override fun resolveIds(ids: List<Long>?): List<Site> {
+        val sites = ArrayList<Site>()
+        ids?.forEach { findById(it)?.let { it1 -> sites.add(it1) }}
+
+        return sites
+    }
+
     private fun serialize() {
         val jsonString = gsonBuilder.toJson(this.sites, listType)
         write(context, jsonFile, jsonString)

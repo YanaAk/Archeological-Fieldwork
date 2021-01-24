@@ -9,8 +9,21 @@ import org.jetbrains.anko.info
 
 class SiteListPresenter(view: BaseView) : BasePresenter(view), AnkoLogger {
 
+    private var favs: Boolean = false
+
+    init {
+        if (view.intent.hasExtra("fav")) {
+            favs = view.intent.extras?.getBoolean("fav", false)!!
+        }
+    }
+
     fun loadSites() {
-        view?.showSites(app.siteStore.findAll())
+        if (favs) {
+            val favoriteSiteIds = app.userStore.getCurrentUser()?.favoriteSites
+            view?.showSites(app.siteStore.resolveIds(favoriteSiteIds))
+        } else {
+            view?.showSites(app.siteStore.findAll())
+        }
     }
 
     fun openNewSiteActivity() {
@@ -28,5 +41,11 @@ class SiteListPresenter(view: BaseView) : BasePresenter(view), AnkoLogger {
 
     fun openMap() {
         view?.navigateTo(VIEW.MAP)
+    }
+
+    fun toggleFavorites() {
+        favs = !favs
+
+        loadSites()
     }
 }

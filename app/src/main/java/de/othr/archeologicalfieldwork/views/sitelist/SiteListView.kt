@@ -45,6 +45,7 @@ class SiteListView : BaseView(), SiteListener, AnkoLogger {
             R.id.item_logout -> presenter.logout()
             R.id.item_settings -> presenter.openSettings()
             R.id.item_map -> presenter.openMap()
+            R.id.item_favs -> presenter.toggleFavorites()
         }
 
         return super.onOptionsItemSelected(item)

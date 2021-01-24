@@ -52,4 +52,11 @@ class SiteMemStore : SiteStore, AnkoLogger {
             error("Tried to delete site which does not exist: $site")
         }
     }
+
+    override fun resolveIds(ids: List<Long>?): List<Site> {
+        val sites = ArrayList<Site>()
+        ids?.forEach { findById(it)?.let { it1 -> sites.add(it1) }}
+
+        return sites
+    }
 }

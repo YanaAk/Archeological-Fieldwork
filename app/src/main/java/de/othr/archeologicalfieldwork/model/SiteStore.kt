@@ -6,4 +6,5 @@ interface SiteStore {
     fun create(site: Site): Site
     fun update(site: Site)
     fun delete(site: Site)
+    fun resolveIds(ids: List<Long>?): List<Site>
 }

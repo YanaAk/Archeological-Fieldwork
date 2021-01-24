@@ -9,15 +9,21 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/item_add"
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="@string/menu_addSite"
+        android:id="@+id/item_favs"
+        android:icon="@android:drawable/btn_star_big_off"
+        android:title="@string/menu_favs"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/item_map"
         android:icon="@android:drawable/ic_menu_mapmode"
         android:title="@string/menu_map"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/item_add"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@string/menu_addSite"
         app:showAsAction="always" />
 
     <item

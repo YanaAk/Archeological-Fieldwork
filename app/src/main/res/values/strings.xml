@@ -39,4 +39,5 @@
     <string name="site_description_placeholder">Description</string>
     <string name="site_image_placeholder">Image</string>
     <string name="menu_map">Map</string>
+    <string name="menu_favs">Favorites</string>
 </resources>
