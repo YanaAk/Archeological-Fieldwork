@@ -13,6 +13,7 @@ import org.jetbrains.anko.info
 import org.jetbrains.anko.warn
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.math.max
 
@@ -69,7 +70,7 @@ class UserJsonStore: UserStore, AnkoLogger {
     override fun signup(email: String, password: String): Boolean {
         if (!this.doesUserExist(email)) {
             val id = this.userCounter.getAndIncrement()
-            this.users.add(User(id, email, password, HashMap()))
+            this.users.add(User(id, email, password, HashMap(), ArrayList()))
             serialize()
             info("Signup successful: $id : $email")
 
@@ -151,9 +152,18 @@ class UserJsonStore: UserStore, AnkoLogger {
     override fun addVisitedSite(id: Long) {
         if (this.user?.visitedSites == null) {
             this.user?.visitedSites = HashMap()
-            this.user?.visitedSites?.put(id, Date())
         }
 
+        this.user?.visitedSites?.put(id, Date())
+        serialize()
+    }
+
+    override fun addFavoriteSite(id: Long) {
+        if (this.user?.favoriteSites == null) {
+            this.user?.favoriteSites = ArrayList()
+        }
+
+        this.user?.favoriteSites?.add(id)
         serialize()
     }
 

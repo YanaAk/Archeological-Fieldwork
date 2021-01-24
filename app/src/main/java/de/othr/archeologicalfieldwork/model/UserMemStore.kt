@@ -49,7 +49,7 @@ class UserMemStore : UserStore, AnkoLogger {
     override fun signup(email: String, password: String): Boolean {
         if (!this.doesUserExist(email)) {
             val id = this.userCounter.getAndIncrement()
-            this.users.add(User(id, email, password, HashMap()))
+            this.users.add(User(id, email, password, HashMap(), ArrayList()))
             info("Signup successful: $id : $email")
 
             return true
@@ -105,6 +105,10 @@ class UserMemStore : UserStore, AnkoLogger {
     override fun addVisitedSite(id: Long) {
         this.user?.visitedSites?.put(id, Date())
 
+    }
+
+    override fun addFavoriteSite(id: Long) {
+        this.user?.favoriteSites?.add(id)
     }
 
     override fun removeVisitedSite(id: Long) {

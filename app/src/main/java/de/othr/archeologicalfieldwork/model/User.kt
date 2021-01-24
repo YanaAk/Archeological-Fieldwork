@@ -9,5 +9,6 @@ data class User(
     var id: Long = 0,
     var email : String = "",
     var password : String = "",
-    var visitedSites : MutableMap<Long, Date>
+    var visitedSites : MutableMap<Long, Date>,
+    var favoriteSites : MutableList<Long>
 ) : Parcelable
