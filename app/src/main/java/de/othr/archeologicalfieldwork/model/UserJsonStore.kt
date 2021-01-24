@@ -14,6 +14,7 @@ import org.jetbrains.anko.warn
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.collections.HashMap
+import kotlin.math.max
 
 class UserJsonStore: UserStore, AnkoLogger {
 
@@ -114,6 +115,14 @@ class UserJsonStore: UserStore, AnkoLogger {
     private fun deserialize() {
         val jsonString = read(context, jsonFile)
         this.users = Gson().fromJson(jsonString, listType)
+
+        var maxId = 0L
+
+        for (u in this.users) {
+            maxId = max(maxId, u.id)
+        }
+
+        this.userCounter.set(maxId)
 
         info("Read users from file")
     }

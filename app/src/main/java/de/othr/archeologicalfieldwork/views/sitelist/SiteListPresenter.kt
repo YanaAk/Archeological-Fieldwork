@@ -25,4 +25,8 @@ class SiteListPresenter(view: BaseView) : BasePresenter(view), AnkoLogger {
     fun openSettings() {
         view?.navigateTo(VIEW.SETTINGS)
     }
+
+    fun openMap() {
+        view?.navigateTo(VIEW.MAP)
+    }
 }

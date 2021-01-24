@@ -37,4 +37,6 @@
     <string name="set_location">Set Location</string>
     <string name="site_title_placeholder">Title</string>
     <string name="site_description_placeholder">Description</string>
+    <string name="site_image_placeholder">Image</string>
+    <string name="menu_map">Map</string>
 </resources>

@@ -11,6 +11,7 @@ import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
 import java.util.concurrent.atomic.AtomicLong
+import kotlin.math.max
 
 class SiteJsonStore : SiteStore, AnkoLogger {
 
@@ -87,6 +88,14 @@ class SiteJsonStore : SiteStore, AnkoLogger {
     private fun deserialize() {
         val jsonString = read(context, jsonFile)
         this.sites = Gson().fromJson(jsonString, listType)
+
+        var maxId = 0L
+
+        for (u in this.sites) {
+            maxId = max(maxId, u.id)
+        }
+
+        this.siteCounter.set(maxId)
 
         info("Read sites from file")
     }

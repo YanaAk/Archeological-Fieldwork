@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import de.othr.archeologicalfieldwork.R
 import de.othr.archeologicalfieldwork.model.Site
 import de.othr.archeologicalfieldwork.views.BaseView
-import kotlinx.android.synthetic.main.activity_site_list_view.*
+import kotlinx.android.synthetic.main.activity_site_list.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 
@@ -18,7 +18,7 @@ class SiteListView : BaseView(), SiteListener, AnkoLogger {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_site_list_view)
+        setContentView(R.layout.activity_site_list)
         setSupportActionBar(toolbar)
 
         presenter = initPresenter(SiteListPresenter(this)) as SiteListPresenter
@@ -44,6 +44,7 @@ class SiteListView : BaseView(), SiteListener, AnkoLogger {
             R.id.item_add -> presenter.openNewSiteActivity()
             R.id.item_logout -> presenter.logout()
             R.id.item_settings -> presenter.openSettings()
+            R.id.item_map -> presenter.openMap()
         }
 
         return super.onOptionsItemSelected(item)
