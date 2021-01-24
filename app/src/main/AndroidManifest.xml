@@ -48,7 +48,8 @@
         </activity>
         <activity
             android:name=".views.site.SiteView"
-            android:parentActivityName=".views.sitelist.SiteListView" />
+            android:parentActivityName=".views.sitelist.SiteListView"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".views.sitelist.SiteListView" />
     </application>
 
