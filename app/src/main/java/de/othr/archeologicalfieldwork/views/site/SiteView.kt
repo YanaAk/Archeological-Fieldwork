@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -30,6 +29,7 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback 
     lateinit var presenter: SitePresenter
     var site = Site()
     lateinit var mMapView: MapView
+    private lateinit var gMap: GoogleMap
 
     private val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
 
@@ -45,18 +45,15 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback 
         val layoutManager = LinearLayoutManager(this)
         site_images_recycler.layoutManager = layoutManager
         chooseImage.setOnClickListener { presenter.doSelectImage() }
-        siteLocationButton.setOnClickListener { presenter.doSetLocation() }
-
 
         var mapViewBundle: Bundle? = null
+
         if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY)
         }
 
         mMapView = findViewById<View>(R.id.siteMapLocation) as MapView
         mMapView.onCreate(mapViewBundle)
-
-        mMapView.getMapAsync(this)
         mMapView.getMapAsync(this)
     }
 
@@ -133,39 +130,34 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback 
     }
 
     fun setLocation(location: Location) {
-        if ((location.lat >0.1f || location.lat < -0.1f)
-            && (location.lng >0.1f || location.lng < -0.1f)
-            && (location.zoom >0.1f || location.zoom < -0.1f)) {
-            siteMapWrapper.isVisible = true
-
-            siteMapLocation.getMapAsync {
-                val latlng = LatLng(location.lat, location.lng)
-                it.addMarker(MarkerOptions().position(latlng))
-                it.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12.0f))
-            }
-        } else {
-            // do not show map
-            siteMapWrapper.isVisible = false
-        }
+        val latlng = LatLng(location.lat, location.lng)
+        gMap.clear()
+        gMap.addMarker(MarkerOptions().position(latlng))
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12.0f))
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
-        setLocation(site.location)
+        gMap = googleMap!!
+        googleMap?.setOnMapClickListener { presenter.doSetLocation() }
+        presenter.initMap()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         var mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY)
+
         if (mapViewBundle == null) {
             mapViewBundle = Bundle()
             outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle)
         }
+
         mMapView.onSaveInstanceState(mapViewBundle)
     }
 
     override fun onResume() {
         super.onResume()
         mMapView.onResume()
+        presenter.doResartLocationUpdates()
     }
 
     override fun onStart() {

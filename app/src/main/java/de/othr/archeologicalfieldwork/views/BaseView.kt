@@ -54,6 +54,9 @@ open class BaseView() : AppCompatActivity(), AnkoLogger {
         super.onDestroy()
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        basePresenter?.doRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -61,10 +64,6 @@ open class BaseView() : AppCompatActivity(), AnkoLogger {
         if (data != null) {
             basePresenter?.doActivityResult(requestCode, resultCode, data)
         }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        basePresenter?.doRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     open fun showSite(site: Site, visited: Boolean) {}

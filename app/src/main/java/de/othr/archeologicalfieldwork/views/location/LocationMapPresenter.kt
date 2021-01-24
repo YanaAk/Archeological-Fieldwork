@@ -8,22 +8,24 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import de.othr.archeologicalfieldwork.model.Location
+import de.othr.archeologicalfieldwork.views.BasePresenter
 
-class LocationMapPresenter(val view: LocationMapView) {
+class LocationMapPresenter(private val locationView: LocationMapView) : BasePresenter(locationView) {
 
     var location = Location()
 
     init {
-        location = view.intent.extras?.getParcelable("location")!!
+        location = locationView.intent.extras?.getParcelable("location")!!
     }
 
     fun initMap(map: GoogleMap) {
         val loc = LatLng(location.lat, location.lng)
         val options = MarkerOptions()
-            .title("Placemark")
+            .title("Site")
             .snippet("GPS : " + loc.toString())
             .draggable(true)
             .position(loc)
+        map.uiSettings.isZoomControlsEnabled = true
         map.addMarker(options)
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, location.zoom))
     }
@@ -37,8 +39,8 @@ class LocationMapPresenter(val view: LocationMapView) {
     fun doOnBackPressed() {
         val resultIntent = Intent()
         resultIntent.putExtra("location", location)
-        view.setResult(Activity.RESULT_OK, resultIntent)
-        view.finish()
+        locationView.setResult(Activity.RESULT_OK, resultIntent)
+        locationView.finish()
     }
 
     fun doUpdateMarker(marker: Marker) {
