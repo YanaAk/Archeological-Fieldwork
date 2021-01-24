@@ -33,4 +33,8 @@
     <string name="account_data_changed">Account data changed</string>
     <string name="account_change_error">Error</string>
     <string name="site_checkbox_visited">Visited</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="set_location">Set Location</string>
+    <string name="site_title_placeholder">Title</string>
+    <string name="site_description_placeholder">Description</string>
 </resources>

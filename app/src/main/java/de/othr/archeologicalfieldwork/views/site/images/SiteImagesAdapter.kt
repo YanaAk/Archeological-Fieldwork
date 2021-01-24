@@ -15,7 +15,7 @@ class SiteImagesAdapter constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImagesMainHolder {
         return ImagesMainHolder(
-            LayoutInflater.from(parent?.context).inflate(
+            LayoutInflater.from(parent.context).inflate(
                 R.layout.card_image,
                 parent,
                 false

@@ -3,15 +3,19 @@ package de.othr.archeologicalfieldwork.views.site
 import android.content.Intent
 import de.othr.archeologicalfieldwork.helper.showImagePicker
 import de.othr.archeologicalfieldwork.main.MainApp
+import de.othr.archeologicalfieldwork.model.Location
 import de.othr.archeologicalfieldwork.model.Site
 import de.othr.archeologicalfieldwork.views.BasePresenter
+import de.othr.archeologicalfieldwork.views.VIEW
 
-class SitePresenter (view: SiteView) : BasePresenter(view) {
+class SitePresenter(view: SiteView) : BasePresenter(view) {
 
     private var edit = false
     private val IMAGE_REQUEST = 1
+    private val LOCATION_REQUEST = 2
 
     private var siteView: SiteView = view
+    var defaultLocation = Location(49.013432, 12.101624, 15f)
 
     init {
         app = view.application as MainApp
@@ -75,8 +79,26 @@ class SitePresenter (view: SiteView) : BasePresenter(view) {
                     images.add(data.data.toString())
                 }
 
-                siteView?.updateImages(images)
+                siteView.updateImages(images)
             }
+            LOCATION_REQUEST -> {
+                val location = data.extras?.getParcelable<Location>("location")!!
+                siteView.site.location = location
+                siteView.setLocation(location)
+            }
+        }
+    }
+
+    fun doSetLocation() {
+        if (!edit) {
+            view?.navigateTo(VIEW.LOCATION, LOCATION_REQUEST, "location", defaultLocation)
+        } else {
+            view?.navigateTo(
+                VIEW.LOCATION,
+                LOCATION_REQUEST,
+                "location",
+                siteView.site.location
+            )
         }
     }
 }

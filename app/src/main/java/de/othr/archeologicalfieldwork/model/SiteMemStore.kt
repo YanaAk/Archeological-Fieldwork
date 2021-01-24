@@ -34,6 +34,7 @@ class SiteMemStore : SiteStore, AnkoLogger {
             persistedSite.name = site.name
             persistedSite.images = site.images
             persistedSite.notes = site.notes
+            persistedSite.location = site.location
 
             info("Update site: $site")
         } else {

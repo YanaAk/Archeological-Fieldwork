@@ -40,7 +40,7 @@ class SiteListView : BaseView(), SiteListener, AnkoLogger {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item?.itemId) {
+        when (item.itemId) {
             R.id.item_add -> presenter.openNewSiteActivity()
             R.id.item_logout -> presenter.logout()
             R.id.item_settings -> presenter.openSettings()

@@ -4,8 +4,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import de.othr.archeologicalfieldwork.R
+import de.othr.archeologicalfieldwork.model.Location
 import de.othr.archeologicalfieldwork.model.Site
 import de.othr.archeologicalfieldwork.views.BaseView
 import de.othr.archeologicalfieldwork.views.site.images.SiteImagesAdapter
@@ -15,10 +23,14 @@ import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 import org.jetbrains.anko.toast
 
-class SiteView : BaseView(), SiteImagesListener, AnkoLogger {
+
+class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback {
 
     lateinit var presenter: SitePresenter
     var site = Site()
+    lateinit var mMapView: MapView
+
+    private val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,20 +39,33 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger {
         init(siteToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        presenter = initPresenter (SitePresenter(this)) as SitePresenter
+        presenter = initPresenter(SitePresenter(this)) as SitePresenter
 
         val layoutManager = LinearLayoutManager(this)
         site_images_recycler.layoutManager = layoutManager
         chooseImage.setOnClickListener { presenter.doSelectImage() }
+        siteLocationButton.setOnClickListener { presenter.doSetLocation() }
+
+
+        var mapViewBundle: Bundle? = null
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY)
+        }
+
+        mMapView = findViewById<View>(R.id.siteMapLocation) as MapView
+        mMapView.onCreate(mapViewBundle)
+
+        mMapView.getMapAsync(this)
+        mMapView.getMapAsync(this)
     }
 
     override fun showSite(site: Site, visited: Boolean) {
+        this.site = site
         siteName.setText(site.name)
         siteDescription.setText(site.description)
         siteNotes.setText(site.notes)
         visitedCheckBox.isChecked = visited
         this.updateImages(site.images)
-        this.site = site
     }
 
     fun updateImages(images: List<String>) {
@@ -67,7 +92,7 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item?.itemId) {
+        when (item.itemId) {
             R.id.item_save -> {
                 if (siteName.text.toString().isEmpty()) {
                     toast(R.string.enter_site_name)
@@ -104,5 +129,58 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger {
 
     override fun onImageClick(image: String) {
         info("Image $image clicked")
+    }
+
+    fun setLocation(location: Location) {
+        siteMapLocation.getMapAsync {
+            val latlng = LatLng(location.lat, location.lng)
+            it.addMarker(MarkerOptions().position(latlng))
+            it.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12.0f))
+            info("halsd")
+        }
+    }
+
+    override fun onMapReady(googleMap: GoogleMap?) {
+        setLocation(site.location)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        var mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY)
+        if (mapViewBundle == null) {
+            mapViewBundle = Bundle()
+            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle)
+        }
+        mMapView.onSaveInstanceState(mapViewBundle)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mMapView.onResume()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mMapView.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mMapView.onStop()
+    }
+
+    override fun onPause() {
+        mMapView.onPause()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        mMapView.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mMapView.onLowMemory()
     }
 }
