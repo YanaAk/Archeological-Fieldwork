@@ -70,7 +70,9 @@ class UserJsonStore: UserStore, AnkoLogger {
     override fun signup(email: String, password: String): Boolean {
         if (!this.doesUserExist(email)) {
             val id = this.userCounter.getAndIncrement()
-            this.users.add(User(id, email, password, HashMap(), ArrayList()))
+            val newUser = User(id, email, password, HashMap(), ArrayList())
+            this.users.add(newUser)
+            this.user = newUser
             serialize()
             info("Signup successful: $id : $email")
 
@@ -123,7 +125,7 @@ class UserJsonStore: UserStore, AnkoLogger {
             maxId = max(maxId, u.id)
         }
 
-        this.userCounter.set(maxId)
+        this.userCounter.set(maxId+1L)
 
         info("Read users from file")
     }

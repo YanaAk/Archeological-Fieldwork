@@ -10,5 +10,6 @@ data class Site(
     var description : String = "",
     var images : List<String> = ArrayList(),
     var notes : String = "",
-    var location : Location = Location()
+    var location : Location = Location(),
+    var rating : Rating = Rating()
 ) : Parcelable

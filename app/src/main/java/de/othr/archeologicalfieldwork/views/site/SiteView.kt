@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.RatingBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -31,6 +32,7 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback 
     var site = Site()
     lateinit var mMapView: MapView
     private lateinit var gMap: GoogleMap
+    var ratingbar: RatingBar? = null
 
     private val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
 
@@ -56,6 +58,19 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback 
         mMapView = findViewById<View>(R.id.siteMapLocation) as MapView
         mMapView.onCreate(mapViewBundle)
         mMapView.getMapAsync(this)
+
+        setupRatingBar()
+    }
+
+    private fun setupRatingBar() {
+        ratingbar = findViewById<View>(R.id.ratingBar) as RatingBar
+        ratingbar!!.rating = this.site.rating.rating
+
+        ratingButton.setOnClickListener {
+            val rating: Float = ratingbar!!.rating
+            presenter.doRating(site, rating)
+            info("Rated $site with $rating")
+        }
     }
 
     override fun showSite(site: Site, visited: Boolean) {

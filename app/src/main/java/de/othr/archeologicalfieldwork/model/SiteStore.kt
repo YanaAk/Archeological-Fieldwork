@@ -7,4 +7,5 @@ interface SiteStore {
     fun update(site: Site)
     fun delete(site: Site)
     fun resolveIds(ids: List<Long>?): List<Site>
+    fun addRating(site: Site, user: User, rating: Float)
 }

@@ -35,6 +35,7 @@ class SiteMemStore : SiteStore, AnkoLogger {
             persistedSite.images = site.images
             persistedSite.notes = site.notes
             persistedSite.location = site.location
+            persistedSite.rating = site.rating
 
             info("Update site: $site")
         } else {
@@ -58,5 +59,20 @@ class SiteMemStore : SiteStore, AnkoLogger {
         ids?.forEach { findById(it)?.let { it1 -> sites.add(it1) }}
 
         return sites
+    }
+
+    override fun addRating(site: Site, user: User, rating: Float) {
+        val persistedSite = this.findById(site.id)
+
+        if (persistedSite != null) {
+            persistedSite.rating.userRating[user.id] = rating
+            var overallRating = 0.0f
+
+            for (r in persistedSite.rating.userRating) {
+                overallRating += r.value
+            }
+
+            persistedSite.rating.rating = overallRating / persistedSite.rating.userRating.size
+        }
     }
 }

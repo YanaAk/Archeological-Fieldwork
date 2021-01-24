@@ -30,7 +30,7 @@ class SitePresenter(view: SiteView) : BasePresenter(view), AnkoLogger {
 
     var locationManualyChanged = false
     var locationService: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(view)
-    val locationRequest = createDefaultLocationRequest()
+    private val locationRequest = createDefaultLocationRequest()
 
     init {
         app = view.application as MainApp
@@ -187,5 +187,9 @@ class SitePresenter(view: SiteView) : BasePresenter(view), AnkoLogger {
 
             info("Added favorite: ${site.id}")
         }
+    }
+
+    fun doRating(site: Site, rating: Float) {
+        app.siteStore.addRating(site, app.userStore.getCurrentUser()!!, rating)
     }
 }
