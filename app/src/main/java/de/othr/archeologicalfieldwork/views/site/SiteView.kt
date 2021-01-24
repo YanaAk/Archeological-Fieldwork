@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -132,11 +133,19 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback 
     }
 
     fun setLocation(location: Location) {
-        siteMapLocation.getMapAsync {
-            val latlng = LatLng(location.lat, location.lng)
-            it.addMarker(MarkerOptions().position(latlng))
-            it.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12.0f))
-            info("halsd")
+        if ((location.lat >0.1f || location.lat < -0.1f)
+            && (location.lng >0.1f || location.lng < -0.1f)
+            && (location.zoom >0.1f || location.zoom < -0.1f)) {
+            siteMapWrapper.isVisible = true
+
+            siteMapLocation.getMapAsync {
+                val latlng = LatLng(location.lat, location.lng)
+                it.addMarker(MarkerOptions().position(latlng))
+                it.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12.0f))
+            }
+        } else {
+            // do not show map
+            siteMapWrapper.isVisible = false
         }
     }
 
