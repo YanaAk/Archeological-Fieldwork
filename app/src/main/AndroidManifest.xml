@@ -26,7 +26,8 @@
 
         <activity
             android:name=".views.location.LocationMapView"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps"
+            android:configChanges="orientation|screenSize"/>
         <activity
             android:name=".views.settings.SettingsView"
             android:parentActivityName=".views.sitelist.SiteListView" />
