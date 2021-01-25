@@ -18,9 +18,9 @@ class SiteMapView : BaseView(), AnkoLogger, GoogleMap.OnMarkerClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_site_map)
-        super.init(toolbar);
+        super.init(toolbar)
 
-        presenter = initPresenter (SiteMapPresenter(this)) as SiteMapPresenter
+        presenter = initPresenter(SiteMapPresenter(this)) as SiteMapPresenter
 
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync {
