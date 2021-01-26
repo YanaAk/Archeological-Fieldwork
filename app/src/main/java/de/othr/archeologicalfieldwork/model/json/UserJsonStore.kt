@@ -1,4 +1,4 @@
-package de.othr.archeologicalfieldwork.model
+package de.othr.archeologicalfieldwork.model.json
 
 import android.content.Context
 import com.google.gson.Gson
@@ -7,6 +7,10 @@ import com.google.gson.reflect.TypeToken
 import de.othr.archeologicalfieldwork.helper.exists
 import de.othr.archeologicalfieldwork.helper.read
 import de.othr.archeologicalfieldwork.helper.write
+import de.othr.archeologicalfieldwork.model.Site
+import de.othr.archeologicalfieldwork.model.User
+import de.othr.archeologicalfieldwork.model.UserStore
+import de.othr.archeologicalfieldwork.model.UserUpdateState
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info

@@ -1,5 +1,9 @@
-package de.othr.archeologicalfieldwork.model
+package de.othr.archeologicalfieldwork.model.mem
 
+import de.othr.archeologicalfieldwork.model.Site
+import de.othr.archeologicalfieldwork.model.User
+import de.othr.archeologicalfieldwork.model.UserStore
+import de.othr.archeologicalfieldwork.model.UserUpdateState
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
