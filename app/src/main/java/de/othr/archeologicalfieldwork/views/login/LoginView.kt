@@ -67,6 +67,16 @@ class LoginView : BaseView() {
         password.error = getString(R.string.invalid_password__wrong_password)
         Toast.makeText(applicationContext, getString(R.string.login_failed), Toast.LENGTH_SHORT).show()
     }
+
+    fun showProgressBar() {
+        loading.isIndeterminate = true
+        loading.isVisible = true
+    }
+
+    fun hideProgressBar() {
+        loading.isIndeterminate = false
+        loading.isVisible = false
+    }
 }
 
 /**

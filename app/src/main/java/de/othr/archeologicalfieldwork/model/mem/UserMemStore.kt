@@ -4,19 +4,19 @@ import de.othr.archeologicalfieldwork.model.Site
 import de.othr.archeologicalfieldwork.model.User
 import de.othr.archeologicalfieldwork.model.UserStore
 import de.othr.archeologicalfieldwork.model.UserUpdateState
+import de.othr.archeologicalfieldwork.views.Progressable
+import de.othr.archeologicalfieldwork.views.ProgressableForResult
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
 import org.jetbrains.anko.warn
 import java.util.*
-import java.util.concurrent.atomic.AtomicLong
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class UserMemStore : UserStore, AnkoLogger {
 
     var users = ArrayList<User>()
-    private val userCounter = AtomicLong()
 
     var user: User? = null
         private set
@@ -25,24 +25,22 @@ class UserMemStore : UserStore, AnkoLogger {
         user = null
     }
 
-    override fun login(email: String, password: String): Boolean {
+    override fun login(email: String, password: String, callback: Progressable) {
+        callback.start()
         val user = this.users.find { u -> u.email == email.trim() }
 
         if (user != null) {
             if (user.password == password) {
                 this.user = user
                 info("Login successful: $email")
-
-                return true
+                callback.done()
             } else {
                 warn("Login failed: Wrong password for $email")
-
-                return false
+                callback.failure()
             }
         } else {
             warn("Login failed: User does not exist $email")
-
-            return false
+            callback.failure()
         }
     }
 
@@ -50,21 +48,28 @@ class UserMemStore : UserStore, AnkoLogger {
         user = null
     }
 
-    override fun signup(email: String, password: String): Boolean {
-        if (!this.doesUserExist(email)) {
-            val id = this.userCounter.getAndIncrement()
-            this.users.add(User(id, email, password, HashMap(), ArrayList()))
-            info("Signup successful: $id : $email")
+    override fun signup(email: String, password: String, callback: Progressable) {
+        this.doesUserExist(email, object : ProgressableForResult<Boolean, Void> {
+            override fun start() {}
 
-            return true
-        } else {
-            error("Signup failed: $email. E-Mail is already in use")
+            override fun done(r: Boolean) {
+                if (!r) {
+                    val newUser = User(UUID.randomUUID().toString(), email, password, HashMap(), ArrayList())
+                    users.add(newUser)
+                    user = newUser
+                    info("Signup successful: ${newUser.id} : $email")
+                    callback.done()
+                } else {
+                    error("Signup failed: $email. E-Mail is already in use")
+                    callback.failure()
+                }
+            }
 
-            return false
-        }
+            override fun failure(r: Void) {}
+        })
     }
 
-    override fun delete(user: User): Boolean {
+    fun delete(user: User): Boolean {
         val user = this.users.find { u -> u.id == user.id}
 
         if (user != null) {
@@ -79,15 +84,16 @@ class UserMemStore : UserStore, AnkoLogger {
         }
     }
 
-    override fun doesUserExist(email: String): Boolean {
-        return this.users.find { u -> u.email == email.trim() } != null
+    override fun doesUserExist(email: String, callback: ProgressableForResult<Boolean, Void>) {
+        callback.start()
+        callback.done(this.users.find { u -> u.email == email.trim() } != null)
     }
 
     override fun getCurrentUser(): User? {
         return this.user
     }
 
-    override fun updateUser(id: Long?, accountEmail: String, accountPassword: String): UserUpdateState {
+    override fun updateUser(id: String?, accountEmail: String, accountPassword: String): UserUpdateState {
         val user = this.users.find { u -> u.id == id } ?: return UserUpdateState.FAILURE_USER_NOT_FOUND
 
         if (user.email == accountEmail) {

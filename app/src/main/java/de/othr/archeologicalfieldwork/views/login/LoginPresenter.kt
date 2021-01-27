@@ -4,7 +4,11 @@ import de.othr.archeologicalfieldwork.helper.AccountInputStatus
 import de.othr.archeologicalfieldwork.helper.checkAccountInput
 import de.othr.archeologicalfieldwork.main.MainApp
 import de.othr.archeologicalfieldwork.views.BasePresenter
+import de.othr.archeologicalfieldwork.views.Progressable
+import de.othr.archeologicalfieldwork.views.ProgressableForResult
 import de.othr.archeologicalfieldwork.views.VIEW
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
 class LoginPresenter(view: LoginView) : BasePresenter(view) {
 
@@ -15,20 +19,62 @@ class LoginPresenter(view: LoginView) : BasePresenter(view) {
     }
 
     fun doLoginOrSignup(email: String, password: String) {
-        if (app.userStore.doesUserExist(email)) {
-            // do login
-            if (app.userStore.login(email, password)) {
-                navigateToStartPage()
-            } else {
-                loginView.setLoginError()
-            }
-        } else {
-            // do signup
-            if (app.userStore.signup(email, password)) {
-                navigateToStartPage()
-            } else {
-                loginView.setSignupError()
-            }
+        doAsync {
+            app.userStore.doesUserExist(email, object : ProgressableForResult<Boolean, Void> {
+                override fun start() {
+                    uiThread {
+                        loginView.showProgressBar()
+                    }
+                }
+
+                override fun done(r: Boolean) {
+                    if (r) {
+                        // do login
+                        app.userStore.login(email, password, object : Progressable {
+                            override fun start() {}
+
+                            override fun done() {
+                                uiThread {
+                                    navigateToStartPage()
+                                    loginView.hideProgressBar()
+                                }
+                            }
+
+                            override fun failure() {
+                                uiThread {
+                                    loginView.setLoginError()
+                                }
+                            }
+                        })
+                    } else {
+                        // do signup
+                        app.userStore.signup(email, password, object : Progressable {
+                            override fun start() {}
+
+                            override fun done() {
+                                uiThread {
+                                    navigateToStartPage()
+                                    loginView.hideProgressBar()
+                                }
+                            }
+
+                            override fun failure() {
+                                uiThread {
+                                    loginView.setSignupError()
+                                    loginView.hideProgressBar()
+                                }
+                            }
+                        })
+                    }
+                }
+
+                override fun failure(r: Void) {
+                    uiThread {
+                        loginView.setLoginError()
+                        loginView.hideProgressBar()
+                    }
+                }
+            })
         }
     }
 

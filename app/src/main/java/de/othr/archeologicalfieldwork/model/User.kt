@@ -6,7 +6,7 @@ import java.util.*
 
 @Parcelize
 data class User(
-    var id: Long = 0,
+    var id: String = "",
     var email : String = "",
     var password : String = "",
     var visitedSites : MutableMap<Long, Date>,

@@ -11,15 +11,15 @@ import de.othr.archeologicalfieldwork.model.Site
 import de.othr.archeologicalfieldwork.model.User
 import de.othr.archeologicalfieldwork.model.UserStore
 import de.othr.archeologicalfieldwork.model.UserUpdateState
+import de.othr.archeologicalfieldwork.views.Progressable
+import de.othr.archeologicalfieldwork.views.ProgressableForResult
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
 import org.jetbrains.anko.warn
 import java.util.*
-import java.util.concurrent.atomic.AtomicLong
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.math.max
 
 class UserJsonStore: UserStore, AnkoLogger {
 
@@ -29,7 +29,6 @@ class UserJsonStore: UserStore, AnkoLogger {
 
     private var context: Context
     private var users = mutableListOf<User>()
-    private val userCounter = AtomicLong()
 
     var user: User? = null
         private set
@@ -46,24 +45,22 @@ class UserJsonStore: UserStore, AnkoLogger {
         user = null
     }
 
-    override fun login(email: String, password: String): Boolean {
+    override fun login(email: String, password: String, callback: Progressable) {
+        callback.start()
         val user = this.users.find { u -> u.email == email.trim() }
 
         if (user != null) {
             if (user.password == password) {
                 this.user = user
                 info("Login successful: $email")
-
-                return true
+                callback.done()
             } else {
                 warn("Login failed: Wrong password for $email")
-
-                return false
+                callback.failure()
             }
         } else {
             warn("Login failed: User does not exist $email")
-
-            return false
+            callback.failure()
         }
     }
 
@@ -71,24 +68,29 @@ class UserJsonStore: UserStore, AnkoLogger {
         user = null
     }
 
-    override fun signup(email: String, password: String): Boolean {
-        if (!this.doesUserExist(email)) {
-            val id = this.userCounter.getAndIncrement()
-            val newUser = User(id, email, password, HashMap(), ArrayList())
-            this.users.add(newUser)
-            this.user = newUser
-            serialize()
-            info("Signup successful: $id : $email")
+    override fun signup(email: String, password: String, callback: Progressable) {
+        this.doesUserExist(email, object : ProgressableForResult<Boolean, Void> {
+            override fun start() {}
 
-            return true
-        } else {
-            error("Signup failed: $email. E-Mail is already in use")
+            override fun done(r: Boolean) {
+                if (!r) {
+                    val newUser = User(UUID.randomUUID().toString(), email, password, HashMap(), ArrayList())
+                    users.add(newUser)
+                    user = newUser
+                    serialize()
+                    info("Signup successful: ${newUser.id} : $email")
+                    callback.done()
+                } else {
+                    error("Signup failed: $email. E-Mail is already in use")
+                    callback.failure()
+                }
+            }
 
-            return false
-        }
+            override fun failure(r: Void) {}
+        })
     }
 
-    override fun delete(user: User): Boolean {
+    fun delete(user: User): Boolean {
         val persistedUser = this.users.find { u -> u.id == user.id}
 
         if (persistedUser != null) {
@@ -104,8 +106,9 @@ class UserJsonStore: UserStore, AnkoLogger {
         }
     }
 
-    override fun doesUserExist(email: String): Boolean {
-        return this.users.find { u -> u.email == email.trim() } != null
+    override fun doesUserExist(email: String, callback: ProgressableForResult<Boolean, Void>) {
+        callback.start()
+        callback.done(this.users.find { u -> u.email == email.trim() } != null)
     }
 
     override fun getCurrentUser(): User? {
@@ -123,18 +126,10 @@ class UserJsonStore: UserStore, AnkoLogger {
         val jsonString = read(context, jsonFile)
         this.users = Gson().fromJson(jsonString, listType)
 
-        var maxId = 0L
-
-        for (u in this.users) {
-            maxId = max(maxId, u.id)
-        }
-
-        this.userCounter.set(maxId+1L)
-
         info("Read users from file")
     }
 
-    override fun updateUser(id: Long?, accountEmail: String, accountPassword: String): UserUpdateState {
+    override fun updateUser(id: String?, accountEmail: String, accountPassword: String): UserUpdateState {
         val user = this.users.find { u -> u.id == id } ?: return UserUpdateState.FAILURE_USER_NOT_FOUND
 
         if (user.email == accountEmail) {
