@@ -4,6 +4,7 @@ import de.othr.archeologicalfieldwork.helper.AccountInputStatus
 import de.othr.archeologicalfieldwork.helper.checkAccountInput
 import de.othr.archeologicalfieldwork.model.UserUpdateState
 import de.othr.archeologicalfieldwork.views.BasePresenter
+import de.othr.archeologicalfieldwork.views.ProgressableForResult
 import org.jetbrains.anko.AnkoLogger
 
 class SettingsPresenter(view: SettingsView) : BasePresenter(view), AnkoLogger {
@@ -43,10 +44,26 @@ class SettingsPresenter(view: SettingsView) : BasePresenter(view), AnkoLogger {
         val accountEmail = settingsView.getAccountEmail()
         val accountPassword = settingsView.getAccountPassword()
 
-        when(app.userStore.updateUser(currentUser?.id, accountEmail, accountPassword)) {
-            UserUpdateState.FAILURE_USER_NOT_FOUND -> settingsView.showFailureMessage()
-            UserUpdateState.SUCCESS -> settingsView.showSuccessMessage()
-            UserUpdateState.FAILURE_USERNAME_USED -> settingsView.showUsernameTakenFailureMessage()
-        }
+        app.userStore.updateUser(currentUser?.id, accountEmail, accountPassword, object: ProgressableForResult<UserUpdateState, UserUpdateState> {
+            override fun start() {}
+
+            override fun done(r: UserUpdateState) {
+                when(r) {
+                    UserUpdateState.FAILURE_USER_NOT_FOUND -> settingsView.showFailureMessage()
+                    UserUpdateState.SUCCESS -> settingsView.showSuccessMessage()
+                    UserUpdateState.FAILURE_USERNAME_USED -> settingsView.showUsernameTakenFailureMessage()
+                    UserUpdateState.FAILURE_PASSWORD_ERROR -> settingsView.showFailureMessage()
+                }
+            }
+
+            override fun failure(r: UserUpdateState) {
+                when(r) {
+                    UserUpdateState.FAILURE_USER_NOT_FOUND -> settingsView.showFailureMessage()
+                    UserUpdateState.SUCCESS -> settingsView.showSuccessMessage()
+                    UserUpdateState.FAILURE_USERNAME_USED -> settingsView.showUsernameTakenFailureMessage()
+                    UserUpdateState.FAILURE_PASSWORD_ERROR -> settingsView.showFailureMessage()
+                }
+            }
+        })
     }
 }

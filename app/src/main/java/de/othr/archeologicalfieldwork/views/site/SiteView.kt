@@ -153,7 +153,7 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback 
 
     override fun onMapReady(googleMap: GoogleMap?) {
         gMap = googleMap!!
-        googleMap?.setOnMapClickListener { presenter.doSetLocation() }
+        googleMap.setOnMapClickListener { presenter.doSetLocation() }
         presenter.initMap()
     }
 

@@ -28,10 +28,9 @@ class UserJsonStore: UserStore, AnkoLogger {
     private val listType = object : TypeToken<ArrayList<User>>() {}.type
 
     private var context: Context
-    private var users = mutableListOf<User>()
+    var users = mutableListOf<User>()
 
     var user: User? = null
-        private set
 
     constructor (context: Context) {
         this.context = context
@@ -129,24 +128,28 @@ class UserJsonStore: UserStore, AnkoLogger {
         info("Read users from file")
     }
 
-    override fun updateUser(id: String?, accountEmail: String, accountPassword: String): UserUpdateState {
-        val user = this.users.find { u -> u.id == id } ?: return UserUpdateState.FAILURE_USER_NOT_FOUND
+    override fun updateUser(id: String?, accountEmail: String, accountPassword: String, callback: ProgressableForResult<UserUpdateState, UserUpdateState>) {
+        val user = this.users.find { u -> u.id == id }
 
-        if (user.email == accountEmail) {
-            // same email -> only change password
-            user.password = accountPassword
-            serialize()
-
-            return UserUpdateState.SUCCESS
-        } else if (this.users.find {u -> u.email == accountEmail} != null){
-            // change both email and password
-            user.email = accountEmail
-            user.password = accountPassword
-            serialize()
-
-            return UserUpdateState.SUCCESS
+        if (user == null) {
+            callback.failure(UserUpdateState.FAILURE_USER_NOT_FOUND)
         } else {
-            return UserUpdateState.FAILURE_USERNAME_USED
+            if (user.email == accountEmail) {
+                // same email -> only change password
+                user.password = accountPassword
+                serialize()
+
+                callback.done(UserUpdateState.SUCCESS)
+            } else if (this.users.find {u -> u.email == accountEmail} != null){
+                // change both email and password
+                user.email = accountEmail
+                user.password = accountPassword
+                serialize()
+
+                callback.done(UserUpdateState.SUCCESS)
+            } else {
+                callback.failure(UserUpdateState.FAILURE_USER_NOT_FOUND)
+            }
         }
     }
 

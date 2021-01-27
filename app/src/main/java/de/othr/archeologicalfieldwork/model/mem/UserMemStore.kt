@@ -93,28 +93,32 @@ class UserMemStore : UserStore, AnkoLogger {
         return this.user
     }
 
-    override fun updateUser(id: String?, accountEmail: String, accountPassword: String): UserUpdateState {
-        val user = this.users.find { u -> u.id == id } ?: return UserUpdateState.FAILURE_USER_NOT_FOUND
+    override fun updateUser(id: String?, accountEmail: String, accountPassword: String, callback: ProgressableForResult<UserUpdateState, UserUpdateState>) {
+        callback.start()
+        val user = this.users.find { u -> u.id == id }
 
-        if (user.email == accountEmail) {
-            // same email -> only change password
-            user.password = accountPassword
-
-            return UserUpdateState.SUCCESS
-        } else if (this.users.find {u -> u.email == accountEmail} != null){
-            // change both email and password
-            user.email = accountEmail
-            user.password = accountPassword
-
-            return UserUpdateState.SUCCESS
+        if (user == null) {
+            callback.failure(UserUpdateState.FAILURE_USER_NOT_FOUND)
         } else {
-            return UserUpdateState.FAILURE_USERNAME_USED
+            if (user.email == accountEmail) {
+                // same email -> only change password
+                user.password = accountPassword
+
+                callback.done(UserUpdateState.SUCCESS)
+            } else if (this.users.find {u -> u.email == accountEmail} != null){
+                // change both email and password
+                user.email = accountEmail
+                user.password = accountPassword
+
+                callback.done(UserUpdateState.SUCCESS)
+            } else {
+                callback.failure(UserUpdateState.FAILURE_USERNAME_USED)
+            }
         }
     }
 
     override fun addVisitedSite(id: Long) {
         this.user?.visitedSites?.put(id, Date())
-
     }
 
     override fun addFavoriteSite(id: Long) {

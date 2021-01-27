@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.view.isVisible
 import de.othr.archeologicalfieldwork.R
 import de.othr.archeologicalfieldwork.views.BaseView
 import kotlinx.android.synthetic.main.activity_login.*

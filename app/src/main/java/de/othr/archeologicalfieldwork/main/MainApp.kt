@@ -1,10 +1,11 @@
 package de.othr.archeologicalfieldwork.main
 
 import android.app.Application
+import com.google.firebase.FirebaseApp
 import de.othr.archeologicalfieldwork.model.SiteStore
 import de.othr.archeologicalfieldwork.model.UserStore
+import de.othr.archeologicalfieldwork.model.firebase.FirebaseUserStore
 import de.othr.archeologicalfieldwork.model.json.SiteJsonStore
-import de.othr.archeologicalfieldwork.model.json.UserJsonStore
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 
@@ -16,7 +17,8 @@ class MainApp : Application(), AnkoLogger {
     override fun onCreate() {
         super.onCreate()
 
-        this.userStore = UserJsonStore(applicationContext)
+        FirebaseApp.initializeApp(this)
+        this.userStore = FirebaseUserStore(applicationContext)
         this.siteStore = SiteJsonStore(applicationContext)
 
         info("Application started")

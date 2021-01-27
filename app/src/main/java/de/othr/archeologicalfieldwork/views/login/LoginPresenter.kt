@@ -43,6 +43,7 @@ class LoginPresenter(view: LoginView) : BasePresenter(view) {
                             override fun failure() {
                                 uiThread {
                                     loginView.setLoginError()
+                                    loginView.hideProgressBar()
                                 }
                             }
                         })

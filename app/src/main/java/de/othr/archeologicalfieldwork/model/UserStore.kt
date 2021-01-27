@@ -9,7 +9,8 @@ interface UserStore {
     fun signup(email: String, password: String, callback: Progressable)
     fun doesUserExist(email: String, callback: ProgressableForResult<Boolean, Void>)
     fun getCurrentUser(): User?
-    fun updateUser(id: String?, accountEmail: String, accountPassword: String): UserUpdateState
+    fun updateUser(id: String?, accountEmail: String, accountPassword: String,
+                   callback: ProgressableForResult<UserUpdateState, UserUpdateState>)
     fun addVisitedSite(id: Long)
     fun addFavoriteSite(id: Long)
     fun removeVisitedSite(id: Long)
