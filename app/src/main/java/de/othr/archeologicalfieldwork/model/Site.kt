@@ -5,7 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Site(
-    var id: Long = 0,
+    var id: String = "",
     var name : String = "",
     var description : String = "",
     var images : List<String> = ArrayList(),

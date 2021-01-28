@@ -100,17 +100,17 @@ class FirebaseUserStore(context: Context) : UserStore, AnkoLogger {
         }
     }
 
-    override fun addVisitedSite(id: Long) {
+    override fun addVisitedSite(id: String) {
         userData.user = userData.users.find { u -> u.id == getCurrentUser()?.id }
         userData.addVisitedSite(id)
     }
 
-    override fun addFavoriteSite(id: Long) {
+    override fun addFavoriteSite(id: String) {
         userData.user = userData.users.find { u -> u.id == getCurrentUser()?.id }
         userData.addFavoriteSite(id)
     }
 
-    override fun removeVisitedSite(id: Long) {
+    override fun removeVisitedSite(id: String) {
         userData.user = userData.users.find { u -> u.id == getCurrentUser()?.id }
         userData.removeVisitedSite(id)
     }

@@ -11,9 +11,9 @@ interface UserStore {
     fun getCurrentUser(): User?
     fun updateUser(id: String?, accountEmail: String, accountPassword: String,
                    callback: ProgressableForResult<UserUpdateState, UserUpdateState>)
-    fun addVisitedSite(id: Long)
-    fun addFavoriteSite(id: Long)
-    fun removeVisitedSite(id: Long)
+    fun addVisitedSite(id: String)
+    fun addFavoriteSite(id: String)
+    fun removeVisitedSite(id: String)
     fun hasFavorite(site: Site): Boolean
     fun removeFavoriteSite(site: Site)
 }

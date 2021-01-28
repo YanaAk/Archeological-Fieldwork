@@ -4,8 +4,8 @@ import android.app.Application
 import com.google.firebase.FirebaseApp
 import de.othr.archeologicalfieldwork.model.SiteStore
 import de.othr.archeologicalfieldwork.model.UserStore
+import de.othr.archeologicalfieldwork.model.firebase.FirebaseSiteStore
 import de.othr.archeologicalfieldwork.model.firebase.FirebaseUserStore
-import de.othr.archeologicalfieldwork.model.json.SiteJsonStore
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 
@@ -19,7 +19,7 @@ class MainApp : Application(), AnkoLogger {
 
         FirebaseApp.initializeApp(this)
         this.userStore = FirebaseUserStore(applicationContext)
-        this.siteStore = SiteJsonStore(applicationContext)
+        this.siteStore = FirebaseSiteStore()
 
         info("Application started")
     }

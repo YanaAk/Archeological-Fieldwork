@@ -13,8 +13,8 @@ import de.othr.archeologicalfieldwork.model.User
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
-import java.util.concurrent.atomic.AtomicLong
-import kotlin.math.max
+import java.util.*
+import kotlin.collections.ArrayList
 
 class SiteJsonStore : SiteStore, AnkoLogger {
 
@@ -24,7 +24,6 @@ class SiteJsonStore : SiteStore, AnkoLogger {
 
     private var context: Context
     private var sites = ArrayList<Site>()
-    private val siteCounter = AtomicLong()
 
     constructor (context: Context) {
         this.context = context
@@ -38,12 +37,12 @@ class SiteJsonStore : SiteStore, AnkoLogger {
         return this.sites
     }
 
-    override fun findById(id: Long): Site? {
+    override fun findById(id: String): Site? {
         return sites.find { it.id == id }
     }
 
     override fun create(site: Site): Site {
-        site.id = this.siteCounter.getAndIncrement()
+        site.id = UUID.randomUUID().toString()
         this.sites.add(site)
         serialize()
 
@@ -82,7 +81,7 @@ class SiteJsonStore : SiteStore, AnkoLogger {
         }
     }
 
-    override fun resolveIds(ids: List<Long>?): List<Site> {
+    override fun resolveIds(ids: List<String>?): List<Site> {
         val sites = ArrayList<Site>()
         ids?.forEach { findById(it)?.let { it1 -> sites.add(it1) }}
 
@@ -116,14 +115,6 @@ class SiteJsonStore : SiteStore, AnkoLogger {
     private fun deserialize() {
         val jsonString = read(context, jsonFile)
         this.sites = Gson().fromJson(jsonString, listType)
-
-        var maxId = 0L
-
-        for (u in this.sites) {
-            maxId = max(maxId, u.id)
-        }
-
-        this.siteCounter.set(maxId+1L)
 
         info("Read sites from file")
     }

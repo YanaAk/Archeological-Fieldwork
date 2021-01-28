@@ -153,7 +153,7 @@ class UserJsonStore: UserStore, AnkoLogger {
         }
     }
 
-    override fun addVisitedSite(id: Long) {
+    override fun addVisitedSite(id: String) {
         if (this.user?.visitedSites == null) {
             this.user?.visitedSites = HashMap()
         }
@@ -162,7 +162,7 @@ class UserJsonStore: UserStore, AnkoLogger {
         serialize()
     }
 
-    override fun addFavoriteSite(id: Long) {
+    override fun addFavoriteSite(id: String) {
         if (this.user?.favoriteSites == null) {
             this.user?.favoriteSites = ArrayList()
         }
@@ -171,7 +171,7 @@ class UserJsonStore: UserStore, AnkoLogger {
         serialize()
     }
 
-    override fun removeVisitedSite(id: Long) {
+    override fun removeVisitedSite(id: String) {
         this.user?.visitedSites?.remove(id)
         serialize()
     }

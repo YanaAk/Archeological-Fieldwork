@@ -117,15 +117,15 @@ class UserMemStore : UserStore, AnkoLogger {
         }
     }
 
-    override fun addVisitedSite(id: Long) {
+    override fun addVisitedSite(id: String) {
         this.user?.visitedSites?.put(id, Date())
     }
 
-    override fun addFavoriteSite(id: Long) {
+    override fun addFavoriteSite(id: String) {
         this.user?.favoriteSites?.add(id)
     }
 
-    override fun removeVisitedSite(id: Long) {
+    override fun removeVisitedSite(id: String) {
         this.user?.visitedSites?.remove(id)
     }
 

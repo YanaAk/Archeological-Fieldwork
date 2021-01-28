@@ -1,20 +1,28 @@
-package de.othr.archeologicalfieldwork.model.mem
+package de.othr.archeologicalfieldwork.model.firebase
 
+import com.google.firebase.database.*
 import de.othr.archeologicalfieldwork.model.Site
 import de.othr.archeologicalfieldwork.model.SiteStore
 import de.othr.archeologicalfieldwork.model.User
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.error
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.info
-import java.util.*
-import kotlin.collections.ArrayList
 
-class SiteMemStore : SiteStore, AnkoLogger {
+class FirebaseSiteStore : SiteStore, AnkoLogger {
 
-    var sites = ArrayList<Site>()
+    private val DB_SITES = "sites"
+
+    private var sites = ArrayList<Site>()
+    lateinit var db: DatabaseReference
+
+    init {
+        doAsync {
+            fetchSites { info("Loaded sites from db") }
+        }
+    }
 
     override fun findAll(): List<Site> {
-        return this.sites
+        return sites
     }
 
     override fun findById(id: String): Site? {
@@ -22,10 +30,14 @@ class SiteMemStore : SiteStore, AnkoLogger {
     }
 
     override fun create(site: Site): Site {
-        site.id = UUID.randomUUID().toString()
-        this.sites.add(site)
+        val key = db.child(DB_SITES).push().key
+        key?.let {
+            site.id = key
+            sites.add(site)
+            db.child(DB_SITES).child(key).setValue(site)
+            info("Created new site: $site")
+        }
 
-        info("Created new site: $site")
         return site
     }
 
@@ -38,7 +50,8 @@ class SiteMemStore : SiteStore, AnkoLogger {
             persistedSite.images = site.images
             persistedSite.notes = site.notes
             persistedSite.location = site.location
-            persistedSite.rating = site.rating
+
+            db.child(DB_SITES).child(persistedSite.id).setValue(persistedSite)
 
             info("Update site: $site")
         } else {
@@ -47,14 +60,8 @@ class SiteMemStore : SiteStore, AnkoLogger {
     }
 
     override fun delete(site: Site) {
-        val persistedSite = this.findById(site.id)
-
-        if (persistedSite != null) {
-            this.sites.remove(persistedSite)
-            info("Deleted site: $site")
-        } else {
-            error("Tried to delete site which does not exist: $site")
-        }
+        db.child(DB_SITES).child(site.id).removeValue()
+        sites.remove(site)
     }
 
     override fun resolveIds(ids: List<String>?): List<Site> {
@@ -76,6 +83,23 @@ class SiteMemStore : SiteStore, AnkoLogger {
             }
 
             persistedSite.rating.rating = overallRating / persistedSite.rating.userRating.size
+            db.child(DB_SITES).child(persistedSite.id).setValue(persistedSite)
+            info("Added rating $rating for site: $site")
         }
+    }
+
+    private fun fetchSites(sitesReady: () -> Unit) {
+        val valueEventListener = object : ValueEventListener {
+            override fun onCancelled(dataSnapshot: DatabaseError) {}
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot!!.children.mapNotNullTo(sites) { it.getValue(Site::class.java) }
+                sitesReady()
+            }
+        }
+
+        db = FirebaseDatabase.getInstance().reference
+        sites.clear()
+        db.child(DB_SITES).addListenerForSingleValueEvent(valueEventListener)
     }
 }
