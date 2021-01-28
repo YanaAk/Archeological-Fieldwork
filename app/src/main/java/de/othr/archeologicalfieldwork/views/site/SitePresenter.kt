@@ -178,7 +178,7 @@ class SitePresenter(view: SiteView) : BasePresenter(view), AnkoLogger {
     }
 
     fun setFav(site: Site) {
-        if (app.userStore.hasFavorite(site)) {
+        if (app.userStore.isFavorite(site)) {
             app.userStore.removeFavoriteSite(site)
 
             info("Removed favorite: ${site.id}")

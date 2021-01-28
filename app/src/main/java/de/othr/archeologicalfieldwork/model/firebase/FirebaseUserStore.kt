@@ -1,37 +1,68 @@
 package de.othr.archeologicalfieldwork.model.firebase
 
-import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import de.othr.archeologicalfieldwork.model.Site
 import de.othr.archeologicalfieldwork.model.User
 import de.othr.archeologicalfieldwork.model.UserStore
 import de.othr.archeologicalfieldwork.model.UserUpdateState
-import de.othr.archeologicalfieldwork.model.json.UserJsonStore
 import de.othr.archeologicalfieldwork.views.Progressable
 import de.othr.archeologicalfieldwork.views.ProgressableForResult
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.error
+import java.util.*
+import kotlin.collections.ArrayList
 
-class FirebaseUserStore(context: Context) : UserStore, AnkoLogger {
+class FirebaseUserStore : UserStore, AnkoLogger {
+
+    private data class UserData(var visitedSites : MutableMap<String, Date>,
+                                var favoriteSites : MutableList<String>)
+
+    private val DB_USERS = "userdata"
     
     private val mAuth: FirebaseAuth? = FirebaseAuth.getInstance()
-    private val userData: UserJsonStore = UserJsonStore(context)
+    private lateinit var db: DatabaseReference
+    private var userData: UserData? = null
+
+    init {
+        doAsync {
+            db = FirebaseDatabase.getInstance().reference
+        }
+    }
 
     override fun login(email: String, password: String, callback: Progressable) {
         callback.start()
         mAuth!!.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                getCurrentUser()?.let {
-                    if (!userData.users.contains(it)) {
-                        userData.users.add(it)
-                    }
-                }
-
-                callback.done()
+                fetchUserData { callback.done() }
             } else {
                 callback.failure()
             }
         }
+    }
+
+    private fun fetchUserData(dataReady: () -> Unit) {
+        val user = mAuth!!.currentUser!!
+        var tmpUserData = ArrayList<UserData>()
+        val valueEventListener = object : ValueEventListener {
+            override fun onCancelled(dataSnapshot: DatabaseError) {}
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot!!.children.mapNotNullTo(tmpUserData) { it.getValue(UserData::class.java) }
+
+                if (tmpUserData.isEmpty()) {
+                    userData = UserData(HashMap(), ArrayList())
+                } else {
+                    userData = tmpUserData.first()
+                }
+
+                dataReady()
+            }
+        }
+
+        db = FirebaseDatabase.getInstance().reference
+        db.child(DB_USERS).child(user.uid).addListenerForSingleValueEvent(valueEventListener)
     }
 
     override fun logout() {
@@ -42,7 +73,7 @@ class FirebaseUserStore(context: Context) : UserStore, AnkoLogger {
         callback.start()
         mAuth!!.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                getCurrentUser()?.let { userData.users.add(it) }
+                db.child(DB_USERS).child(mAuth!!.currentUser!!.uid).setValue(UserData(HashMap(), ArrayList()))
                 callback.done()
             } else {
                 error(task.exception)
@@ -62,9 +93,8 @@ class FirebaseUserStore(context: Context) : UserStore, AnkoLogger {
 
     override fun getCurrentUser(): User? {
         val firebaseuser = mAuth!!.currentUser!!
-        userData.user = userData.users.find { u -> u.id == firebaseuser.uid }
 
-        return User(firebaseuser.uid, firebaseuser.email!!, "", userData.user!!.visitedSites, userData.user!!.favoriteSites)
+        return User(firebaseuser.uid, firebaseuser.email!!, "", userData!!.visitedSites, userData!!.favoriteSites)
     }
 
     override fun updateUser(
@@ -101,27 +131,26 @@ class FirebaseUserStore(context: Context) : UserStore, AnkoLogger {
     }
 
     override fun addVisitedSite(id: String) {
-        userData.user = userData.users.find { u -> u.id == getCurrentUser()?.id }
-        userData.addVisitedSite(id)
+        userData!!.visitedSites[id] = Date()
+        db.child(DB_USERS).child(mAuth!!.currentUser!!.uid).setValue(userData)
     }
 
     override fun addFavoriteSite(id: String) {
-        userData.user = userData.users.find { u -> u.id == getCurrentUser()?.id }
-        userData.addFavoriteSite(id)
+        userData!!.favoriteSites.add(id)
+        db.child(DB_USERS).child(mAuth!!.currentUser!!.uid).setValue(userData)
     }
 
     override fun removeVisitedSite(id: String) {
-        userData.user = userData.users.find { u -> u.id == getCurrentUser()?.id }
-        userData.removeVisitedSite(id)
+        userData!!.visitedSites.remove(id)
+        db.child(DB_USERS).child(mAuth!!.currentUser!!.uid).setValue(userData)
     }
 
-    override fun hasFavorite(site: Site): Boolean {
-        userData.user = userData.users.find { u -> u.id == getCurrentUser()?.id }
-        return userData.hasFavorite(site)
+    override fun isFavorite(site: Site): Boolean {
+        return userData!!.favoriteSites.find { s -> s == site.id } != null
     }
 
     override fun removeFavoriteSite(site: Site) {
-        userData.user = userData.users.find { u -> u.id == getCurrentUser()?.id }
-        userData.removeFavoriteSite(site)
+        userData!!.favoriteSites.remove(site.id)
+        db.child(DB_USERS).child(mAuth!!.currentUser!!.uid).setValue(userData)
     }
 }

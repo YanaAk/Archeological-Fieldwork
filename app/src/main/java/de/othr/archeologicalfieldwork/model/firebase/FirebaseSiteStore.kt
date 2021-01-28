@@ -13,7 +13,7 @@ class FirebaseSiteStore : SiteStore, AnkoLogger {
     private val DB_SITES = "sites"
 
     private var sites = ArrayList<Site>()
-    lateinit var db: DatabaseReference
+    private lateinit var db: DatabaseReference
 
     init {
         doAsync {

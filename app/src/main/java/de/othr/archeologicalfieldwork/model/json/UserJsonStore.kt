@@ -176,7 +176,7 @@ class UserJsonStore: UserStore, AnkoLogger {
         serialize()
     }
 
-    override fun hasFavorite(site: Site): Boolean {
+    override fun isFavorite(site: Site): Boolean {
         val res = this.user?.favoriteSites?.find { sid -> sid == site.id }
 
         return res != null
