@@ -80,7 +80,7 @@ class SiteView : BaseView(R.layout.activity_site), SiteImagesListener, AnkoLogge
         this.updateImages(site.images)
     }
 
-    fun updateImages(images: List<String>) {
+    fun updateImages(images: MutableList<String>) {
         this.site.images = images
 
         site_images_recycler.adapter = SiteImagesAdapter(this.site.images, this)

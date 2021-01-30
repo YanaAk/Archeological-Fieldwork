@@ -1,19 +1,27 @@
 package de.othr.archeologicalfieldwork.model.firebase
 
+import android.content.Context
+import android.graphics.Bitmap
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import de.othr.archeologicalfieldwork.helper.readImageFromPath
 import de.othr.archeologicalfieldwork.model.Site
 import de.othr.archeologicalfieldwork.model.SiteStore
 import de.othr.archeologicalfieldwork.model.User
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.info
+import java.io.ByteArrayOutputStream
+import java.io.File
 
-class FirebaseSiteStore : SiteStore, AnkoLogger {
+class FirebaseSiteStore(val context: Context) : SiteStore, AnkoLogger {
 
     private val DB_SITES = "sites"
 
     private var sites = ArrayList<Site>()
     private lateinit var db: DatabaseReference
+    lateinit var st: StorageReference
 
     init {
         doAsync {
@@ -52,10 +60,41 @@ class FirebaseSiteStore : SiteStore, AnkoLogger {
             persistedSite.location = site.location
 
             db.child(DB_SITES).child(persistedSite.id).setValue(persistedSite)
+            updateImages(persistedSite)
 
             info("Update site: $site")
         } else {
             error("Tried to update site which does not exist")
+        }
+    }
+
+    private fun updateImages(site: Site) {
+        val images = ArrayList(site.images)
+
+        for (image in images) {
+            if (image != "" && image.startsWith("content://")) {
+                val fileName = File(image)
+                val imageName = fileName.name
+
+                var imageRef = st.child(site.id + '/' + imageName)
+                val baos = ByteArrayOutputStream()
+                val bitmap = readImageFromPath(context, image)
+
+                bitmap?.let {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                    val data = baos.toByteArray()
+                    val uploadTask = imageRef.putBytes(data)
+                    uploadTask.addOnFailureListener {
+                        println(it.message)
+                    }.addOnSuccessListener { taskSnapshot ->
+                        taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener {
+                            site.images.remove(image)
+                            site.images.add(it.toString())
+                            db.child(DB_SITES).child(site.id).child("images").setValue(site.images)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -99,6 +138,7 @@ class FirebaseSiteStore : SiteStore, AnkoLogger {
         }
 
         db = FirebaseDatabase.getInstance().reference
+        st = FirebaseStorage.getInstance().reference
         sites.clear()
         db.child(DB_SITES).addListenerForSingleValueEvent(valueEventListener)
     }

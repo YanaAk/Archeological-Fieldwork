@@ -8,7 +8,7 @@ data class Site(
     var id: String = "",
     var name : String = "",
     var description : String = "",
-    var images : List<String> = ArrayList(),
+    var images : MutableList<String> = ArrayList(),
     var notes : String = "",
     var location : Location = Location(),
     var rating : Rating = Rating()

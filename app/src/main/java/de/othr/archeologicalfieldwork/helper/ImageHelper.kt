@@ -1,15 +1,12 @@
 package de.othr.archeologicalfieldwork.helper
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import de.othr.archeologicalfieldwork.R
-import java.io.IOException
 
 fun showImagePicker(parent: Fragment, id: Int) {
     val intent = Intent()
@@ -19,20 +16,6 @@ fun showImagePicker(parent: Fragment, id: Int) {
     intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
     val chooser = Intent.createChooser(intent, R.string.select_site_image.toString())
     parent.startActivityForResult(chooser, id)
-}
-
-fun readImage(activity: Activity, resultCode: Int, data: Intent?): Bitmap? {
-    var bitmap: Bitmap? = null
-
-    if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(activity.contentResolver, data.data)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-
-    return bitmap
 }
 
 fun readImageFromPath(context: Context, path : String) : Bitmap? {

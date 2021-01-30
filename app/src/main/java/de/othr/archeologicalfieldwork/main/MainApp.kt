@@ -19,7 +19,7 @@ class MainApp : Application(), AnkoLogger {
 
         FirebaseApp.initializeApp(this)
         this.userStore = FirebaseUserStore()
-        this.siteStore = FirebaseSiteStore()
+        this.siteStore = FirebaseSiteStore(applicationContext)
 
         info("Application started")
     }

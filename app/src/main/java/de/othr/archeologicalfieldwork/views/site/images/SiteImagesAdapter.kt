@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import de.othr.archeologicalfieldwork.R
 import de.othr.archeologicalfieldwork.helper.readImageFromPath
 import kotlinx.android.synthetic.main.card_image.view.*
@@ -33,7 +34,12 @@ class SiteImagesAdapter constructor(
     class ImagesMainHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(imgSrc: String, listener: SiteImagesListener) {
-            itemView.siteDetailImage.setImageBitmap(readImageFromPath(itemView.context, imgSrc))
+            if (imgSrc.startsWith("content://")) {
+                itemView.siteDetailImage.setImageBitmap(readImageFromPath(itemView.context, imgSrc))
+            } else {
+                Glide.with(itemView).load(imgSrc).into(itemView.siteDetailImage);
+            }
+
             itemView.setOnClickListener { listener.onImageClick(imgSrc) }
         }
     }
