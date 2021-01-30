@@ -80,6 +80,10 @@ class SiteView : BaseView(R.layout.activity_site), SiteImagesListener, AnkoLogge
         this.updateImages(site.images)
     }
 
+    fun getIsVisited(): Boolean {
+        return visitedCheckBox.isChecked
+    }
+
     fun updateImages(images: MutableList<String>) {
         this.site.images = images
 
@@ -96,12 +100,15 @@ class SiteView : BaseView(R.layout.activity_site), SiteImagesListener, AnkoLogge
         inflater.inflate(R.menu.menu_site, menu)
         this.menu = menu
 
+        presenter.setupMenu()
+
         if (this.site.name.isBlank()) {
             // new site
             val deleteButton = menu.findItem(R.id.item_delete)
             deleteButton.isVisible = false
 
             hideFavSelection()
+            hideShareMenu()
         }
     }
 
@@ -109,7 +116,7 @@ class SiteView : BaseView(R.layout.activity_site), SiteImagesListener, AnkoLogge
         when (item.itemId) {
             R.id.item_save -> {
                 if (siteName.text.toString().isEmpty()) {
-                    Toast.makeText(activity, R.string.enter_site_name, Toast.LENGTH_SHORT)
+                    Toast.makeText(activity, R.string.enter_site_name, Toast.LENGTH_SHORT).show()
                 } else {
                     site.name = siteName.text.toString()
                     site.description = siteDescription.text.toString()
@@ -194,7 +201,19 @@ class SiteView : BaseView(R.layout.activity_site), SiteImagesListener, AnkoLogge
         mMapView.onLowMemory()
     }
 
+    fun setFavSelectionOn() {
+        menu.findItem(R.id.item_mark_fav).setIcon(android.R.drawable.btn_star_big_on)
+    }
+
+    fun setFavSelectionOff() {
+        menu.findItem(R.id.item_mark_fav).setIcon(android.R.drawable.btn_star_big_off)
+    }
+
     fun hideFavSelection() {
         menu.findItem(R.id.item_mark_fav).isVisible = false
+    }
+
+    fun hideShareMenu() {
+        menu.findItem(R.id.item_share).isVisible = false
     }
 }

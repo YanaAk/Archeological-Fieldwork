@@ -20,6 +20,7 @@ import org.jetbrains.anko.info
 class SiteListView : BaseView(R.layout.activity_site_list), SiteListener, AnkoLogger {
 
     lateinit var presenter: SiteListPresenter
+    lateinit var navView: NavigationView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,9 +30,8 @@ class SiteListView : BaseView(R.layout.activity_site_list), SiteListener, AnkoLo
 
         val layoutManager = LinearLayoutManager(requireContext())
         recyclerView.layoutManager = layoutManager
-        presenter.loadSites()
 
-        val navView = requireActivity().findViewById(R.id.nav_view) as NavigationView
+        navView = requireActivity().findViewById(R.id.nav_view) as NavigationView
         val drawerLayout = requireActivity().findViewById(R.id.mainDrawerLayout) as DrawerLayout
         navView.setNavigationItemSelectedListener {dest ->
             when(dest.itemId) {
@@ -49,6 +49,16 @@ class SiteListView : BaseView(R.layout.activity_site_list), SiteListener, AnkoLo
         hideSearch()
 
         searchButton.setOnClickListener { presenter.doSearch(searchText.text.toString()) }
+
+        presenter.loadSites()
+    }
+
+    fun setFavSelectionOn() {
+        navView.menu.findItem(R.id.item_favs).setIcon(android.R.drawable.btn_star_big_on)
+    }
+
+    fun setFavSelectionOff() {
+        navView.menu.findItem(R.id.item_favs).setIcon(android.R.drawable.btn_star_big_off)
     }
 
     fun hideSearch() {

@@ -1,5 +1,7 @@
 package de.othr.archeologicalfieldwork.views.sitelist
 
+import android.app.Activity
+import android.view.inputmethod.InputMethodManager
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import de.othr.archeologicalfieldwork.R
@@ -21,8 +23,10 @@ class SiteListPresenter(private val siteListView: SiteListView) : BasePresenter(
     fun loadSites() {
         if (favs) {
             val favoriteSiteIds = app.userStore.getCurrentUser()?.favoriteSites
+            siteListView.setFavSelectionOn()
             view?.showSites(app.siteStore.resolveIds(favoriteSiteIds))
         } else {
+            siteListView.setFavSelectionOff()
             view?.showSites(app.siteStore.findAll())
         }
     }
@@ -59,6 +63,8 @@ class SiteListPresenter(private val siteListView: SiteListView) : BasePresenter(
 
         if (!search) {
             siteListView.hideSearch()
+            val imm = view!!.requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view!!.requireView().windowToken, 0)
             loadSites()
         } else {
             siteListView.showSearch()

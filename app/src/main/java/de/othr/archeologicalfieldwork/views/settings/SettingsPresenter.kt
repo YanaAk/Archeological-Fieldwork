@@ -53,6 +53,7 @@ class SettingsPresenter(view: SettingsView) : BasePresenter(view), AnkoLogger {
                     UserUpdateState.SUCCESS -> settingsView.showSuccessMessage()
                     UserUpdateState.FAILURE_USERNAME_USED -> settingsView.showUsernameTakenFailureMessage()
                     UserUpdateState.FAILURE_PASSWORD_ERROR -> settingsView.showFailureMessage()
+                    UserUpdateState.FAILURE_WRONG_PASSWORD -> settingsView.showWrongPassword()
                 }
             }
 
@@ -62,6 +63,7 @@ class SettingsPresenter(view: SettingsView) : BasePresenter(view), AnkoLogger {
                     UserUpdateState.SUCCESS -> settingsView.showSuccessMessage()
                     UserUpdateState.FAILURE_USERNAME_USED -> settingsView.showUsernameTakenFailureMessage()
                     UserUpdateState.FAILURE_PASSWORD_ERROR -> settingsView.showFailureMessage()
+                    UserUpdateState.FAILURE_WRONG_PASSWORD -> settingsView.showWrongPassword()
                 }
             }
         })

@@ -103,7 +103,7 @@ class SiteJsonStore(private var context: Context) : SiteStore, AnkoLogger {
     }
 
     override fun searchForName(text: String): List<Site> {
-        return sites.filter { it.name.contains(text) }
+        return sites.filter { it.name.contains(text, true) }
     }
 
     private fun serialize() {

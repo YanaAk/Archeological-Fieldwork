@@ -88,4 +88,8 @@ class SettingsView : BaseView(R.layout.activity_settings), AnkoLogger {
     fun showUsernameTakenFailureMessage() {
         Toast.makeText(activity, R.string.account_username_taken, Toast.LENGTH_SHORT).show()
     }
+
+    fun showWrongPassword() {
+        Toast.makeText(activity, R.string.invalid_password__wrong_password, Toast.LENGTH_SHORT).show()
+    }
 }

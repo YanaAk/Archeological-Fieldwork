@@ -65,7 +65,7 @@ class SiteMemStore : SiteStore, AnkoLogger {
     }
 
     override fun searchForName(text: String): List<Site> {
-        return sites.filter { it.name.contains(text) }
+        return sites.filter { it.name.contains(text, true) }
     }
 
     override fun addRating(site: Site, user: User, rating: Float) {

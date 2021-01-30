@@ -40,18 +40,21 @@ class SitePresenter(view: SiteView) : BasePresenter(view), AnkoLogger {
         app = view.requireActivity().application as MainApp
         val args: SiteViewArgs by view.navArgs()
 
-        args.siteEdit?.let {
+        locationAccess = checkLocationPermissions(view.requireActivity())
+
+        if (args.siteEdit == null) {
+            view.showSite(siteView.site, siteView.getIsVisited())
+            locationManualyChanged = true
+        } else {
             edit = true
-            val visited = app.userStore.getCurrentUser()?.visitedSites?.contains(it.id)
+            val visited = app.userStore.getCurrentUser()?.visitedSites
 
             if (visited == null) {
-                view.showSite(it, false)
+                view.showSite(args.siteEdit!!, false)
             } else {
-                view.showSite(it, visited)
+                view.showSite(args.siteEdit!!, visited.contains(args.siteEdit!!.id))
             }
         }
-
-        locationAccess = checkLocationPermissions(view.requireActivity())
     }
 
     override fun doRequestPermissionsResult(
@@ -176,10 +179,12 @@ class SitePresenter(view: SiteView) : BasePresenter(view), AnkoLogger {
     fun setFav(site: Site) {
         if (app.userStore.isFavorite(site)) {
             app.userStore.removeFavoriteSite(site)
+            siteView.setFavSelectionOff()
 
             info("Removed favorite: ${site.id}")
         } else {
             app.userStore.addFavoriteSite(site.id)
+            siteView.setFavSelectionOn()
 
             info("Added favorite: ${site.id}")
         }
@@ -198,5 +203,13 @@ class SitePresenter(view: SiteView) : BasePresenter(view), AnkoLogger {
 
         val shareIntent = Intent.createChooser(sendIntent, null)
         siteView.startActivity(shareIntent)
+    }
+
+    fun setupMenu() {
+        if (app.userStore.isFavorite(siteView.site)) {
+            siteView.setFavSelectionOn()
+        } else {
+            siteView.setFavSelectionOff()
+        }
     }
 }

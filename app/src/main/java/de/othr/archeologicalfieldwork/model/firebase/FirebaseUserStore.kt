@@ -66,7 +66,8 @@ class FirebaseUserStore : UserStore, AnkoLogger {
         callback.start()
         mAuth!!.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                db.child(DB_USERS).child(mAuth.currentUser!!.uid).setValue(UserSpecificData(HashMap(), ArrayList()))
+                userSpecificData = UserSpecificData(HashMap(), ArrayList())
+                db.child(DB_USERS).child(mAuth.currentUser!!.uid).setValue(userSpecificData)
                 callback.done()
             } else {
                 error(task.exception)
@@ -87,7 +88,13 @@ class FirebaseUserStore : UserStore, AnkoLogger {
     override fun getCurrentUser(): User? {
         val firebaseuser = mAuth!!.currentUser!!
 
-        return User(firebaseuser.uid, firebaseuser.email!!, "", userSpecificData!!.visitedSites, userSpecificData!!.favoriteSites)
+        var userData = userSpecificData
+
+        if (userData == null) {
+            userData = UserSpecificData(HashMap(), ArrayList())
+        }
+
+        return User(firebaseuser.uid, firebaseuser.email!!, "", userData!!.visitedSites, userData!!.favoriteSites)
     }
 
     override fun updateUser(
@@ -99,7 +106,7 @@ class FirebaseUserStore : UserStore, AnkoLogger {
         val currentUser = mAuth!!.currentUser!!
 
         if (currentUser.email != accountEmail) {
-            currentUser.updateEmail(accountPassword).addOnCompleteListener {
+            currentUser.updateEmail(accountEmail).addOnCompleteListener {
                 if (it.isSuccessful) {
                     currentUser.updatePassword(accountPassword).addOnCompleteListener {
                         if (it.isSuccessful) {
@@ -139,7 +146,7 @@ class FirebaseUserStore : UserStore, AnkoLogger {
     }
 
     override fun isFavorite(site: Site): Boolean {
-        return userSpecificData!!.favoriteSites.find { s -> s == site.id } != null
+        return userSpecificData?.favoriteSites?.find { s -> s == site.id } != null
     }
 
     override fun removeFavoriteSite(site: Site) {
