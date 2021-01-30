@@ -20,6 +20,7 @@ import de.othr.archeologicalfieldwork.views.BasePresenter
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 
+
 class SitePresenter(view: SiteView) : BasePresenter(view), AnkoLogger {
 
     private var edit = false
@@ -30,7 +31,9 @@ class SitePresenter(view: SiteView) : BasePresenter(view), AnkoLogger {
     var defaultLocation = Location(49.013432, 12.101624, 15f)
 
     var locationManualyChanged = false
-    var locationService: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(view.requireActivity())
+    var locationService: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(
+        view.requireActivity()
+    )
     private val locationRequest = createDefaultLocationRequest()
 
     init {
@@ -51,7 +54,11 @@ class SitePresenter(view: SiteView) : BasePresenter(view), AnkoLogger {
         locationAccess = checkLocationPermissions(view.requireActivity())
     }
 
-    override fun doRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun doRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         if (isPermissionGranted(requestCode, grantResults)) {
             info("location granted")
         } else {
@@ -92,7 +99,11 @@ class SitePresenter(view: SiteView) : BasePresenter(view), AnkoLogger {
     }
 
     fun openLocationMap() {
-        Navigation.findNavController(this.view?.requireView()!!).navigate(SiteViewDirections.actionSiteViewToLocationMapView(siteView.site))
+        Navigation.findNavController(this.view?.requireView()!!).navigate(
+            SiteViewDirections.actionSiteViewToLocationMapView(
+                siteView.site
+            )
+        )
     }
 
     override fun doActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
@@ -102,12 +113,12 @@ class SitePresenter(view: SiteView) : BasePresenter(view), AnkoLogger {
             IMAGE_REQUEST -> {
                 var images = ArrayList<String>()
 
-                if(data.clipData != null) {
+                if (data.clipData != null) {
                     for (i in 0 until data.clipData!!.itemCount) {
                         var image = data.clipData!!.getItemAt(i).uri.toString()
                         images.add(image)
                     }
-                } else if(data.data != null) {
+                } else if (data.data != null) {
                     images.add(data.data.toString())
                 }
 
@@ -176,5 +187,16 @@ class SitePresenter(view: SiteView) : BasePresenter(view), AnkoLogger {
 
     fun doRating(site: Site, rating: Float) {
         app.siteStore.addRating(site, app.userStore.getCurrentUser()!!, rating)
+    }
+
+    fun share(site: Site) {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, "Site: ${site.name} at ${site.location.lat}/${site.location.lng}")
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        siteView.startActivity(shareIntent)
     }
 }

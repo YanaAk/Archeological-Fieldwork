@@ -120,6 +120,7 @@ class SiteView : BaseView(R.layout.activity_site), SiteImagesListener, AnkoLogge
             }
             R.id.item_delete -> presenter.doDelete(site)
             R.id.item_mark_fav -> presenter.setFav(site)
+            R.id.item_share -> presenter.share(site)
         }
 
         return super.onOptionsItemSelected(item)
