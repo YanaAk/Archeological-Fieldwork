@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginView">
+    <fragment
+        android:id="@+id/loginView"
+        android:name="de.othr.archeologicalfieldwork.views.login.LoginView"
+        android:label="Login"
+        tools:layout="@layout/activity_login">
+        <action
+            android:id="@+id/action_loginView_to_siteListView"
+            app:destination="@id/siteListView" />
+    </fragment>
+    <fragment
+        android:id="@+id/siteListView"
+        android:name="de.othr.archeologicalfieldwork.views.sitelist.SiteListView"
+        android:label="Sites"
+        tools:layout="@layout/activity_site_list">
+        <action
+            android:id="@+id/action_siteListView_to_settingsView"
+            app:destination="@id/settingsView" />
+        <action
+            android:id="@+id/action_siteListView_to_siteView"
+            app:destination="@id/siteView" />
+        <action
+            android:id="@+id/action_siteListView_to_siteMapView"
+            app:destination="@id/siteMapView" />
+        <action
+            android:id="@+id/action_siteListView_to_loginView"
+            app:destination="@id/loginView" />
+        <argument
+            android:name="showFavs"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsView"
+        android:name="de.othr.archeologicalfieldwork.views.settings.SettingsView"
+        android:label="Settings"
+        tools:layout="@layout/activity_settings">
+        <action
+            android:id="@+id/action_settingsView_to_siteListView"
+            app:destination="@id/siteListView" />
+    </fragment>
+    <fragment
+        android:id="@+id/siteView"
+        android:name="de.othr.archeologicalfieldwork.views.site.SiteView"
+        android:label="Site"
+        tools:layout="@layout/activity_site">
+        <action
+            android:id="@+id/action_siteView_to_locationMapView"
+            app:destination="@id/locationMapView" />
+        <action
+            android:id="@+id/action_siteView_to_siteListView"
+            app:destination="@id/siteListView" />
+        <argument
+            android:name="siteEdit"
+            android:defaultValue="@null"
+            app:argType="de.othr.archeologicalfieldwork.model.Site"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/siteMapView"
+        android:name="de.othr.archeologicalfieldwork.views.map.SiteMapView"
+        android:label="Map"
+        tools:layout="@layout/activity_site_map">
+        <action
+            android:id="@+id/action_siteMapView_to_siteListView"
+            app:destination="@id/siteListView" />
+    </fragment>
+    <fragment
+        android:id="@+id/locationMapView"
+        android:name="de.othr.archeologicalfieldwork.views.location.LocationMapView"
+        android:label="Location"
+        tools:layout="@layout/activity_location">
+        <action
+            android:id="@+id/action_locationMapView_to_siteView"
+            app:destination="@id/siteView" />
+        <argument
+            android:name="site"
+            app:argType="de.othr.archeologicalfieldwork.model.Site" />
+    </fragment>
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="de.othr.archeologicalfieldwork.views.main.MainActivity"
+        android:label="@string/app_name"
+        tools:layout="@layout/activity_main" />
+</navigation>

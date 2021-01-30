@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import de.othr.archeologicalfieldwork.R
-import de.othr.archeologicalfieldwork.views.login.LoginView
+import de.othr.archeologicalfieldwork.views.main.MainActivity
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -19,8 +19,8 @@ class SplashScreenActivity : AppCompatActivity() {
         }
     }
 
-    fun startApp() {
-        startActivity(Intent(this, LoginView::class.java))
+    private fun startApp() {
+        startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
 }

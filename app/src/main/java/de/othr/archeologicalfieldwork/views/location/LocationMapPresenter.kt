@@ -1,25 +1,26 @@
 package de.othr.archeologicalfieldwork.views.location
 
-import android.app.Activity
-import android.content.Intent
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.navArgs
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import de.othr.archeologicalfieldwork.model.Location
+import de.othr.archeologicalfieldwork.model.Site
 import de.othr.archeologicalfieldwork.views.BasePresenter
 
-class LocationMapPresenter(private val locationView: LocationMapView) : BasePresenter(locationView) {
+class LocationMapPresenter(locationView: LocationMapView) : BasePresenter(locationView) {
 
-    var location = Location()
+    private val site: Site
 
     init {
-        location = locationView.intent.extras?.getParcelable("location")!!
+        val args: LocationMapViewArgs by locationView.navArgs()
+        site = args.site
     }
 
     fun initMap(map: GoogleMap) {
-        val loc = LatLng(location.lat, location.lng)
+        val loc = LatLng(site.location.lat, site.location.lng)
         val options = MarkerOptions()
             .title("Site")
             .snippet("GPS : " + loc.toString())
@@ -27,24 +28,21 @@ class LocationMapPresenter(private val locationView: LocationMapView) : BasePres
             .position(loc)
         map.uiSettings.isZoomControlsEnabled = true
         map.addMarker(options)
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, location.zoom))
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, site.location.zoom))
     }
 
     fun doUpdateLocation(lat: Double, lng: Double, zoom: Float) {
-        location.lat = lat
-        location.lng = lng
-        location.zoom = zoom
+        site.location.lat = lat
+        site.location.lng = lng
+        site.location.zoom = zoom
     }
 
-    fun doOnBackPressed() {
-        val resultIntent = Intent()
-        resultIntent.putExtra("location", location)
-        locationView.setResult(Activity.RESULT_OK, resultIntent)
-        locationView.finish()
+    fun openSite() {
+        Navigation.findNavController(this.view?.requireView()!!).navigate(LocationMapViewDirections.actionLocationMapViewToSiteView(site))
     }
-
+    
     fun doUpdateMarker(marker: Marker) {
-        val loc = LatLng(location.lat, location.lng)
+        val loc = LatLng(site.location.lat, site.location.lng)
         marker.setSnippet("GPS : " + loc.toString())
     }
 }

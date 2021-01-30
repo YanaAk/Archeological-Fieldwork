@@ -13,20 +13,20 @@ import de.othr.archeologicalfieldwork.R
 import de.othr.archeologicalfieldwork.views.BaseView
 import kotlinx.android.synthetic.main.activity_login.*
 
-class LoginView : BaseView() {
+class LoginView : BaseView(R.layout.activity_login) {
 
     lateinit var presenter: LoginPresenter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        presenter = initPresenter(LoginPresenter(this)) as LoginPresenter
 
-        presenter = initPresenter (LoginPresenter(this)) as LoginPresenter
+        setHasOptionsMenu(true)
 
-        val username = findViewById<EditText>(R.id.username)
-        val password = findViewById<EditText>(R.id.password)
-        val login = findViewById<Button>(R.id.login)
-        val loading = findViewById<ProgressBar>(R.id.loading)
+        val username = view.findViewById<EditText>(R.id.username)
+        val password = view.findViewById<EditText>(R.id.password)
+        val login = view.findViewById<Button>(R.id.login)
+        val loading = view.findViewById<ProgressBar>(R.id.loading)
 
         username.afterTextChanged {
             checkInput()
@@ -61,12 +61,12 @@ class LoginView : BaseView() {
 
     fun setSignupError() {
         username.error = getString(R.string.invalid_email__in_use)
-        Toast.makeText(applicationContext, getString(R.string.signup_failed), Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireActivity().applicationContext, getString(R.string.signup_failed), Toast.LENGTH_SHORT).show()
     }
 
     fun setLoginError() {
         password.error = getString(R.string.invalid_password__wrong_password)
-        Toast.makeText(applicationContext, getString(R.string.login_failed), Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireActivity().applicationContext, getString(R.string.login_failed), Toast.LENGTH_SHORT).show()
     }
 
     fun showProgressBar() {

@@ -5,7 +5,7 @@ import de.othr.archeologicalfieldwork.main.MainApp
 
 open class BasePresenter(var view: BaseView?) {
 
-    var app: MainApp =  view?.application as MainApp
+    var app: MainApp =  view?.activity?.application as MainApp
 
     open fun doActivityResult(requestCode: Int, resultCode: Int, data: Intent) {}
 
@@ -13,7 +13,6 @@ open class BasePresenter(var view: BaseView?) {
 
     fun logout() {
         app.userStore.logout()
-        view?.navigateTo(VIEW.LOGIN)
     }
 
     open fun onDestroy() {

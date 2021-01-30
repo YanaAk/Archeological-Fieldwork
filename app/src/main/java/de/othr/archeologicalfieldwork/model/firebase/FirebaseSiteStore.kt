@@ -93,7 +93,7 @@ class FirebaseSiteStore : SiteStore, AnkoLogger {
             override fun onCancelled(dataSnapshot: DatabaseError) {}
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                dataSnapshot!!.children.mapNotNullTo(sites) { it.getValue(Site::class.java) }
+                dataSnapshot.children.mapNotNullTo(sites) { it.getValue(Site::class.java) }
                 sitesReady()
             }
         }

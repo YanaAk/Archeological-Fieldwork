@@ -1,55 +1,32 @@
 package de.othr.archeologicalfieldwork.views
 
 import android.content.Intent
-import android.os.Parcelable
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import de.othr.archeologicalfieldwork.model.Site
-import de.othr.archeologicalfieldwork.views.location.LocationMapView
-import de.othr.archeologicalfieldwork.views.login.LoginView
-import de.othr.archeologicalfieldwork.views.map.SiteMapView
-import de.othr.archeologicalfieldwork.views.settings.SettingsView
-import de.othr.archeologicalfieldwork.views.site.SiteView
-import de.othr.archeologicalfieldwork.views.sitelist.SiteListView
 import org.jetbrains.anko.AnkoLogger
 
-enum class VIEW {
-    LIST, SITE, LOGIN, START, SETTINGS, LOCATION, MAP, LIST_FAV
-}
 
-open class BaseView() : AppCompatActivity(), AnkoLogger {
+const val NO_MENU: Int = -1
+
+open class BaseView(private val viewRef: Int) : Fragment(), AnkoLogger {
 
     var basePresenter: BasePresenter? = null
 
-    fun navigateTo(view: VIEW, code: Int = 0, key: String = "", value: Parcelable? = null) {
-        var intent = Intent(this, SiteListView::class.java)
-
-        when (view) {
-            VIEW.START -> navigateTo(VIEW.LIST, code, key, value)
-            VIEW.LIST -> intent = Intent(this, SiteListView::class.java)
-            VIEW.LIST_FAV -> intent = Intent(this, SiteListView::class.java).putExtra("fav", true)
-            VIEW.SITE -> intent = Intent(this, SiteView::class.java)
-            VIEW.LOGIN -> intent = Intent(this, LoginView::class.java)
-            VIEW.SETTINGS -> intent = Intent(this, SettingsView::class.java)
-            VIEW.LOCATION -> intent = Intent(this, LocationMapView::class.java)
-            VIEW.MAP -> intent = Intent(this, SiteMapView::class.java)
-        }
-
-        if (key != "") {
-            intent.putExtra(key, value)
-        }
-
-        startActivityForResult(intent, code)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(viewRef, container, false)
     }
 
     fun initPresenter(presenter: BasePresenter): BasePresenter {
         basePresenter = presenter
-        return presenter
-    }
 
-    fun init(toolbar: Toolbar) {
-        toolbar.title = title
-        setSupportActionBar(toolbar)
+        return presenter
     }
 
     override fun onDestroy() {
@@ -57,7 +34,11 @@ open class BaseView() : AppCompatActivity(), AnkoLogger {
         super.onDestroy()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         basePresenter?.doRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 

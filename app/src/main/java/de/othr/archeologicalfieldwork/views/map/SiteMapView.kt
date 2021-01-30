@@ -1,6 +1,7 @@
 package de.othr.archeologicalfieldwork.views.map
 
 import android.os.Bundle
+import android.view.View
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
@@ -10,16 +11,12 @@ import de.othr.archeologicalfieldwork.views.BaseView
 import kotlinx.android.synthetic.main.activity_site_map.*
 import org.jetbrains.anko.AnkoLogger
 
-class SiteMapView : BaseView(), AnkoLogger, GoogleMap.OnMarkerClickListener {
+class SiteMapView : BaseView(R.layout.activity_site_map), AnkoLogger, GoogleMap.OnMarkerClickListener {
 
     lateinit var presenter: SiteMapPresenter
     lateinit var map : GoogleMap
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_site_map)
-        super.init(toolbar)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter = initPresenter(SiteMapPresenter(this)) as SiteMapPresenter
 
         mapView.onCreate(savedInstanceState);
@@ -47,26 +44,26 @@ class SiteMapView : BaseView(), AnkoLogger, GoogleMap.OnMarkerClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        mapView.onDestroy()
+        mapView?.onDestroy()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView.onLowMemory()
+        mapView?.onLowMemory()
     }
 
     override fun onPause() {
         super.onPause()
-        mapView.onPause()
+        mapView?.onPause()
     }
 
     override fun onResume() {
         super.onResume()
-        mapView.onResume()
+        mapView?.onResume()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        mapView.onSaveInstanceState(outState)
+        mapView?.onSaveInstanceState(outState)
     }
 }

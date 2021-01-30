@@ -3,7 +3,9 @@ package de.othr.archeologicalfieldwork.views.sitelist
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import de.othr.archeologicalfieldwork.R
 import de.othr.archeologicalfieldwork.model.Site
@@ -12,18 +14,17 @@ import kotlinx.android.synthetic.main.activity_site_list.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 
-class SiteListView : BaseView(), SiteListener, AnkoLogger {
+class SiteListView : BaseView(R.layout.activity_site_list), SiteListener, AnkoLogger {
 
     lateinit var presenter: SiteListPresenter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_site_list)
-        setSupportActionBar(toolbar)
-
         presenter = initPresenter(SiteListPresenter(this)) as SiteListPresenter
 
-        val layoutManager = LinearLayoutManager(this)
+        setHasOptionsMenu(true)
+
+        val layoutManager = LinearLayoutManager(requireContext())
         recyclerView.layoutManager = layoutManager
         presenter.loadSites()
     }
@@ -33,16 +34,15 @@ class SiteListView : BaseView(), SiteListener, AnkoLogger {
         recyclerView.adapter?.notifyDataSetChanged()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-
-        return super.onCreateOptionsMenu(menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_main, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.item_add -> presenter.openNewSiteActivity()
-            R.id.item_logout -> presenter.logout()
+            R.id.item_logout -> presenter.openLogin()
             R.id.item_settings -> presenter.openSettings()
             R.id.item_map -> presenter.openMap()
             R.id.item_favs -> presenter.toggleFavorites()

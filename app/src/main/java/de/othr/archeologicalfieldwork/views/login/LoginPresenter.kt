@@ -1,12 +1,13 @@
 package de.othr.archeologicalfieldwork.views.login
 
+import androidx.navigation.Navigation
+import de.othr.archeologicalfieldwork.R
 import de.othr.archeologicalfieldwork.helper.AccountInputStatus
 import de.othr.archeologicalfieldwork.helper.checkAccountInput
 import de.othr.archeologicalfieldwork.main.MainApp
 import de.othr.archeologicalfieldwork.views.BasePresenter
 import de.othr.archeologicalfieldwork.views.Progressable
 import de.othr.archeologicalfieldwork.views.ProgressableForResult
-import de.othr.archeologicalfieldwork.views.VIEW
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -15,7 +16,7 @@ class LoginPresenter(view: LoginView) : BasePresenter(view) {
     private val loginView: LoginView = view
 
     init {
-        app = view.application as MainApp
+        app = view.requireActivity().application as MainApp
     }
 
     fun doLoginOrSignup(email: String, password: String) {
@@ -80,7 +81,7 @@ class LoginPresenter(view: LoginView) : BasePresenter(view) {
     }
 
     private fun navigateToStartPage() {
-        view?.navigateTo(VIEW.START)
+        Navigation.findNavController(this.view?.requireView()!!).navigate(R.id.action_loginView_to_siteListView)
     }
 
     fun checkInput(inputUsername: String, inputPassword: String) {

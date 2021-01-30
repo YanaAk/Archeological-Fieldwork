@@ -3,9 +3,11 @@ package de.othr.archeologicalfieldwork.views.site
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.RatingBar
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -22,10 +24,9 @@ import de.othr.archeologicalfieldwork.views.site.images.SiteImagesListener
 import kotlinx.android.synthetic.main.activity_site.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
-import org.jetbrains.anko.toast
 
 
-class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback {
+class SiteView : BaseView(R.layout.activity_site), SiteImagesListener, AnkoLogger, OnMapReadyCallback {
 
     private lateinit var menu: Menu
     lateinit var presenter: SitePresenter
@@ -36,16 +37,13 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback 
 
     private val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_site)
-
-        init(siteToolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         presenter = initPresenter(SitePresenter(this)) as SitePresenter
 
-        val layoutManager = LinearLayoutManager(this)
+        setHasOptionsMenu(true)
+
+        val layoutManager = LinearLayoutManager(activity)
         site_images_recycler.layoutManager = layoutManager
         chooseImage.setOnClickListener { presenter.doSelectImage() }
 
@@ -55,7 +53,7 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback 
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY)
         }
 
-        mMapView = findViewById<View>(R.id.siteMapLocation) as MapView
+        mMapView = view.findViewById<View>(R.id.siteMapLocation) as MapView
         mMapView.onCreate(mapViewBundle)
         mMapView.getMapAsync(this)
 
@@ -63,7 +61,7 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback 
     }
 
     private fun setupRatingBar() {
-        ratingbar = findViewById<View>(R.id.ratingBar) as RatingBar
+        ratingbar = view?.findViewById<View>(R.id.ratingBar) as RatingBar
         ratingbar!!.rating = this.site.rating.rating
 
         ratingButton.setOnClickListener {
@@ -93,26 +91,25 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback 
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_site, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_site, menu)
         this.menu = menu
 
         if (this.site.name.isBlank()) {
             // new site
             val deleteButton = menu.findItem(R.id.item_delete)
             deleteButton.isVisible = false
+
+            hideFavSelection()
         }
-
-        presenter.initMenu()
-
-        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.item_save -> {
                 if (siteName.text.toString().isEmpty()) {
-                    toast(R.string.enter_site_name)
+                    Toast.makeText(activity, R.string.enter_site_name, Toast.LENGTH_SHORT)
                 } else {
                     site.name = siteName.text.toString()
                     site.description = siteDescription.text.toString()
@@ -134,10 +131,6 @@ class SiteView : BaseView(), SiteImagesListener, AnkoLogger, OnMapReadyCallback 
         if (data != null) {
             presenter.doActivityResult(requestCode, resultCode, data)
         }
-    }
-
-    override fun onBackPressed() {
-        presenter.doCancel()
     }
 
     override fun onImageClick(image: String) {

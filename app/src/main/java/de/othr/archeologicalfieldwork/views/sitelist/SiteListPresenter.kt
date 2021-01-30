@@ -1,20 +1,21 @@
 package de.othr.archeologicalfieldwork.views.sitelist
 
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.navArgs
+import de.othr.archeologicalfieldwork.R
 import de.othr.archeologicalfieldwork.model.Site
 import de.othr.archeologicalfieldwork.views.BasePresenter
 import de.othr.archeologicalfieldwork.views.BaseView
-import de.othr.archeologicalfieldwork.views.VIEW
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.info
 
 class SiteListPresenter(view: BaseView) : BasePresenter(view), AnkoLogger {
 
     private var favs: Boolean = false
 
     init {
-        if (view.intent.hasExtra("fav")) {
-            favs = view.intent.extras?.getBoolean("fav", false)!!
-        }
+        val args: SiteListViewArgs by view.navArgs()
+
+        favs = args.showFavs
     }
 
     fun loadSites() {
@@ -27,25 +28,29 @@ class SiteListPresenter(view: BaseView) : BasePresenter(view), AnkoLogger {
     }
 
     fun openNewSiteActivity() {
-        info("Open new Site activity")
-        view?.navigateTo(VIEW.SITE)
+        Navigation.findNavController(this.view?.requireView()!!).navigate(R.id.action_siteListView_to_siteView)
     }
 
     fun doEditSite(site: Site) {
-        view?.navigateTo(VIEW.SITE, 0, "site_edit", site)
+        Navigation.findNavController(this.view?.requireView()!!).navigate(SiteListViewDirections.actionSiteListViewToSiteView(site))
     }
 
     fun openSettings() {
-        view?.navigateTo(VIEW.SETTINGS)
+        Navigation.findNavController(this.view?.requireView()!!).navigate(R.id.action_siteListView_to_settingsView)
     }
 
     fun openMap() {
-        view?.navigateTo(VIEW.MAP)
+        Navigation.findNavController(this.view?.requireView()!!).navigate(R.id.action_siteListView_to_siteMapView)
     }
 
     fun toggleFavorites() {
         favs = !favs
 
         loadSites()
+    }
+
+    fun openLogin() {
+        app.userStore.logout()
+        Navigation.findNavController(this.view?.requireView()!!).navigate(R.id.action_siteListView_to_loginView)
     }
 }

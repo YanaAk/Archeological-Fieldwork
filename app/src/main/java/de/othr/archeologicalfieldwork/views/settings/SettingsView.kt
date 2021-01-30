@@ -2,25 +2,24 @@ package de.othr.archeologicalfieldwork.views.settings
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
+import android.widget.Toast
 import de.othr.archeologicalfieldwork.R
 import de.othr.archeologicalfieldwork.views.BaseView
 import de.othr.archeologicalfieldwork.views.login.afterTextChanged
 import kotlinx.android.synthetic.main.activity_settings.*
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.toast
 
-class SettingsView : BaseView(), AnkoLogger {
+class SettingsView : BaseView(R.layout.activity_settings), AnkoLogger {
 
     lateinit var presenter: SettingsPresenter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
-
         presenter = initPresenter (SettingsPresenter(this)) as SettingsPresenter
 
-        init(settingsToolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setHasOptionsMenu(true)
 
         presenter.getUserEmail()
         presenter.getTotalNumOfSites()
@@ -37,10 +36,9 @@ class SettingsView : BaseView(), AnkoLogger {
         settingsApply.setOnClickListener { presenter.doApply() }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_blank, menu)
-
-        return super.onCreateOptionsMenu(menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_blank, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     fun setTotalNumberOfSites(size: Int) {
@@ -52,7 +50,7 @@ class SettingsView : BaseView(), AnkoLogger {
     }
 
     fun setAccountEmailAddress(email: String?) {
-        settingsUsername.setText(email?.orEmpty())
+        settingsUsername.setText(email.orEmpty())
     }
 
     fun getAccountEmail(): String {
@@ -76,11 +74,11 @@ class SettingsView : BaseView(), AnkoLogger {
     }
 
     fun showSuccessMessage() {
-        toast(R.string.account_data_changed)
+        Toast.makeText(activity, R.string.account_data_changed, Toast.LENGTH_SHORT).show()
     }
 
     fun showFailureMessage() {
-        toast(R.string.account_change_error)
+        Toast.makeText(activity, R.string.account_change_error, Toast.LENGTH_SHORT).show()
     }
 
     fun setApplyButtonState(state: Boolean) {
@@ -88,6 +86,6 @@ class SettingsView : BaseView(), AnkoLogger {
     }
 
     fun showUsernameTakenFailureMessage() {
-        toast(R.string.account_username_taken)
+        Toast.makeText(activity, R.string.account_username_taken, Toast.LENGTH_SHORT).show()
     }
 }
