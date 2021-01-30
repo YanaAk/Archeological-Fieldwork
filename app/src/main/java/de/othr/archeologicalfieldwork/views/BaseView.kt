@@ -9,9 +9,6 @@ import androidx.fragment.app.Fragment
 import de.othr.archeologicalfieldwork.model.Site
 import org.jetbrains.anko.AnkoLogger
 
-
-const val NO_MENU: Int = -1
-
 open class BaseView(private val viewRef: Int) : Fragment(), AnkoLogger {
 
     var basePresenter: BasePresenter? = null

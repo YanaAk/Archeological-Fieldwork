@@ -1,10 +1,9 @@
-package de.othr.archeologicalfieldwork.main
+package de.othr.archeologicalfieldwork.views.main
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import de.othr.archeologicalfieldwork.R
-import de.othr.archeologicalfieldwork.views.main.MainActivity
 import java.util.*
 import kotlin.concurrent.schedule
 

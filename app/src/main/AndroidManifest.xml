@@ -19,7 +19,7 @@
 
         <activity android:name=".views.main.MainActivity"/>
 
-        <activity android:name=".main.SplashScreenActivity">
+        <activity android:name=".views.main.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
