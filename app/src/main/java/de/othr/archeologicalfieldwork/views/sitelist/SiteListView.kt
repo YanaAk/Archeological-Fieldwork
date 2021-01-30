@@ -6,7 +6,9 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.navigation.NavigationView
 import de.othr.archeologicalfieldwork.R
 import de.othr.archeologicalfieldwork.model.Site
 import de.othr.archeologicalfieldwork.views.BaseView
@@ -27,6 +29,21 @@ class SiteListView : BaseView(R.layout.activity_site_list), SiteListener, AnkoLo
         val layoutManager = LinearLayoutManager(requireContext())
         recyclerView.layoutManager = layoutManager
         presenter.loadSites()
+
+        val navView = requireActivity().findViewById(R.id.nav_view) as NavigationView
+        val drawerLayout = requireActivity().findViewById(R.id.mainDrawerLayout) as DrawerLayout
+        navView.setNavigationItemSelectedListener {dest ->
+            when(dest.itemId) {
+                R.id.item_logout -> presenter.openLogin()
+                R.id.settingsView -> presenter.openSettings()
+                R.id.siteMapView -> presenter.openMap()
+                R.id.item_favs -> presenter.toggleFavorites()
+            }
+
+            drawerLayout.closeDrawers()
+
+            true
+        }
     }
 
     override fun showSites(sites: List<Site>) {
@@ -40,12 +57,9 @@ class SiteListView : BaseView(R.layout.activity_site_list), SiteListener, AnkoLo
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        info("triggered")
         when (item.itemId) {
             R.id.item_add -> presenter.openNewSiteActivity()
-            R.id.item_logout -> presenter.openLogin()
-            R.id.item_settings -> presenter.openSettings()
-            R.id.item_map -> presenter.openMap()
-            R.id.item_favs -> presenter.toggleFavorites()
         }
 
         return super.onOptionsItemSelected(item)

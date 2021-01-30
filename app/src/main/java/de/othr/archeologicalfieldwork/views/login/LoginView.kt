@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.view.isVisible
+import com.google.android.material.navigation.NavigationView
 import de.othr.archeologicalfieldwork.R
 import de.othr.archeologicalfieldwork.views.BaseView
 import kotlinx.android.synthetic.main.activity_login.*
@@ -22,6 +23,8 @@ class LoginView : BaseView(R.layout.activity_login) {
         presenter = initPresenter(LoginPresenter(this)) as LoginPresenter
 
         setHasOptionsMenu(true)
+
+        presenter.prepareDrawer(requireActivity().findViewById(R.id.nav_view) as NavigationView)
 
         val username = view.findViewById<EditText>(R.id.username)
         val password = view.findViewById<EditText>(R.id.password)

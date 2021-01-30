@@ -1,6 +1,7 @@
 package de.othr.archeologicalfieldwork.views.login
 
 import androidx.navigation.Navigation
+import com.google.android.material.navigation.NavigationView
 import de.othr.archeologicalfieldwork.R
 import de.othr.archeologicalfieldwork.helper.AccountInputStatus
 import de.othr.archeologicalfieldwork.helper.checkAccountInput
@@ -13,6 +14,7 @@ import org.jetbrains.anko.uiThread
 
 class LoginPresenter(view: LoginView) : BasePresenter(view) {
 
+    private var navView: NavigationView? = null
     private val loginView: LoginView = view
 
     init {
@@ -81,6 +83,7 @@ class LoginPresenter(view: LoginView) : BasePresenter(view) {
     }
 
     private fun navigateToStartPage() {
+        restoreDrawer()
         Navigation.findNavController(this.view?.requireView()!!).navigate(R.id.action_loginView_to_siteListView)
     }
 
@@ -96,5 +99,20 @@ class LoginPresenter(view: LoginView) : BasePresenter(view) {
                 loginView.setLoginButtonState(false)
             }
         }
+    }
+
+    fun prepareDrawer(navView: NavigationView) {
+        this.navView = navView
+        navView.menu.findItem(R.id.settingsView).isVisible = false
+        navView.menu.findItem(R.id.item_favs).isVisible = false
+        navView.menu.findItem(R.id.siteMapView).isVisible = false
+        navView.menu.findItem(R.id.item_logout).isVisible = false
+    }
+
+    fun restoreDrawer() {
+        navView?.menu!!.findItem(R.id.settingsView).isVisible = true
+        navView?.menu!!.findItem(R.id.item_favs).isVisible = true
+        navView?.menu!!.findItem(R.id.siteMapView).isVisible = true
+        navView?.menu!!.findItem(R.id.item_logout).isVisible = true
     }
 }
