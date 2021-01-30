@@ -107,6 +107,7 @@ class LoginPresenter(view: LoginView) : BasePresenter(view) {
         navView.menu.findItem(R.id.item_favs).isVisible = false
         navView.menu.findItem(R.id.siteMapView).isVisible = false
         navView.menu.findItem(R.id.item_logout).isVisible = false
+        navView.menu.findItem(R.id.offlineToggleButton).isVisible = true
     }
 
     fun restoreDrawer() {
@@ -114,5 +115,14 @@ class LoginPresenter(view: LoginView) : BasePresenter(view) {
         navView?.menu!!.findItem(R.id.item_favs).isVisible = true
         navView?.menu!!.findItem(R.id.siteMapView).isVisible = true
         navView?.menu!!.findItem(R.id.item_logout).isVisible = true
+        navView?.menu!!.findItem(R.id.offlineToggleButton).isVisible = false
+    }
+
+    fun switchOffline(checked: Boolean) {
+        if (checked) {
+            app.goOffline()
+        } else {
+            app.goOnline()
+        }
     }
 }

@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.isVisible
 import com.google.android.material.navigation.NavigationView
 import de.othr.archeologicalfieldwork.R
@@ -24,7 +25,8 @@ class LoginView : BaseView(R.layout.activity_login) {
 
         setHasOptionsMenu(true)
 
-        presenter.prepareDrawer(requireActivity().findViewById(R.id.nav_view) as NavigationView)
+        val navView = requireActivity().findViewById(R.id.nav_view) as NavigationView
+        presenter.prepareDrawer(navView)
 
         val username = view.findViewById<EditText>(R.id.username)
         val password = view.findViewById<EditText>(R.id.password)
@@ -43,6 +45,12 @@ class LoginView : BaseView(R.layout.activity_login) {
             loading.visibility = View.VISIBLE
             presenter.doLoginOrSignup(username.text.toString(), password.text.toString())
             loading.visibility = View.INVISIBLE
+        }
+
+        navView.menu.findItem(R.id.offlineToggleButton)
+            .actionView.findViewById<SwitchCompat>(R.id.offline_switch)
+            .setOnCheckedChangeListener { _, isChecked ->
+                presenter.switchOffline(isChecked)
         }
     }
 
@@ -73,11 +81,13 @@ class LoginView : BaseView(R.layout.activity_login) {
     }
 
     fun showProgressBar() {
+        login.isEnabled = false
         loading.isIndeterminate = true
         loading.isVisible = true
     }
 
     fun hideProgressBar() {
+        login.isEnabled = true
         loading.isIndeterminate = false
         loading.isVisible = false
     }

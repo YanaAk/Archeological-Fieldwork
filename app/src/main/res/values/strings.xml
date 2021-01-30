@@ -42,4 +42,5 @@
     <string name="menu_favs">Favorites</string>
     <string name="menu_mark_fav">Mark Favorite</string>
     <string name="rateButton">Rate</string>
+    <string name="offline_version">Offline version</string>
 </resources>

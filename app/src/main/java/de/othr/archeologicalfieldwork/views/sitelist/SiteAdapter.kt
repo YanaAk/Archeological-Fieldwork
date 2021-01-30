@@ -8,7 +8,6 @@ import com.bumptech.glide.Glide
 import de.othr.archeologicalfieldwork.R
 import de.othr.archeologicalfieldwork.helper.readImageFromPath
 import de.othr.archeologicalfieldwork.model.Site
-import kotlinx.android.synthetic.main.card_image.view.*
 import kotlinx.android.synthetic.main.card_site.view.*
 
 class SiteAdapter constructor(
@@ -41,7 +40,7 @@ class SiteAdapter constructor(
 
             if (site.images.isNotEmpty()) {
                 if (site.images.first().startsWith("content://")) {
-                    itemView.siteDetailImage.setImageBitmap(readImageFromPath(itemView.context, site.images.first()))
+                    itemView.siteImageIcon.setImageBitmap(readImageFromPath(itemView.context, site.images.first()))
                 } else {
                     Glide.with(itemView).load(site.images.first()).into(itemView.siteImageIcon);
                 }
