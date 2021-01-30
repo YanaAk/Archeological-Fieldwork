@@ -8,4 +8,5 @@ interface SiteStore {
     fun delete(site: Site)
     fun resolveIds(ids: List<String>?): List<Site>
     fun addRating(site: Site, user: User, rating: Float)
+    fun searchForName(text: String): List<Site>
 }

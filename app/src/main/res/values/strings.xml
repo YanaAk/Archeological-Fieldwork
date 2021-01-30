@@ -44,4 +44,7 @@
     <string name="rateButton">Rate</string>
     <string name="offline_version">Offline version</string>
     <string name="share">Share</string>
+    <string name="search_title">Search</string>
+    <string name="search_hint">Search</string>
+    <string name="search_text_hint">Search…</string>
 </resources>

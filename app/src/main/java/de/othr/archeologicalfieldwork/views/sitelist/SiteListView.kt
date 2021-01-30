@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
@@ -44,6 +45,21 @@ class SiteListView : BaseView(R.layout.activity_site_list), SiteListener, AnkoLo
 
             true
         }
+
+        hideSearch()
+
+        searchButton.setOnClickListener { presenter.doSearch(searchText.text.toString()) }
+    }
+
+    fun hideSearch() {
+        searchText.isVisible = false
+        searchText.setText("")
+        searchButton.isVisible = false
+    }
+
+    fun showSearch() {
+        searchText.isVisible = true
+        searchButton.isVisible = true
     }
 
     override fun showSites(sites: List<Site>) {
@@ -53,13 +69,14 @@ class SiteListView : BaseView(R.layout.activity_site_list), SiteListener, AnkoLo
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_main, menu)
+        inflater.inflate(R.menu.menu_site_list, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         info("triggered")
         when (item.itemId) {
             R.id.item_add -> presenter.openNewSiteActivity()
+            R.id.search -> presenter.toggleSearch()
         }
 
         return super.onOptionsItemSelected(item)

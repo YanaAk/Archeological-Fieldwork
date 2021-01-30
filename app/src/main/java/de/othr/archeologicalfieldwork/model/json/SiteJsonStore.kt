@@ -16,18 +16,15 @@ import org.jetbrains.anko.info
 import java.util.*
 import kotlin.collections.ArrayList
 
-class SiteJsonStore : SiteStore, AnkoLogger {
+class SiteJsonStore(private var context: Context) : SiteStore, AnkoLogger {
 
     private val jsonFile = "sites.json"
     private val gsonBuilder: Gson = GsonBuilder().setPrettyPrinting().create()
     private val listType = object : TypeToken<ArrayList<Site>>() {}.type
 
-    private var context: Context
     private var sites = ArrayList<Site>()
 
-    constructor (context: Context) {
-        this.context = context
-
+    init {
         if (exists(context, jsonFile)) {
             deserialize()
         }
@@ -103,6 +100,10 @@ class SiteJsonStore : SiteStore, AnkoLogger {
 
             serialize()
         }
+    }
+
+    override fun searchForName(text: String): List<Site> {
+        return sites.filter { it.name.contains(text) }
     }
 
     private fun serialize() {

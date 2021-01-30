@@ -5,15 +5,15 @@ import androidx.navigation.fragment.navArgs
 import de.othr.archeologicalfieldwork.R
 import de.othr.archeologicalfieldwork.model.Site
 import de.othr.archeologicalfieldwork.views.BasePresenter
-import de.othr.archeologicalfieldwork.views.BaseView
 import org.jetbrains.anko.AnkoLogger
 
-class SiteListPresenter(view: BaseView) : BasePresenter(view), AnkoLogger {
+class SiteListPresenter(private val siteListView: SiteListView) : BasePresenter(siteListView), AnkoLogger {
 
     private var favs: Boolean = false
+    private var search: Boolean = false
 
     init {
-        val args: SiteListViewArgs by view.navArgs()
+        val args: SiteListViewArgs by siteListView.navArgs()
 
         favs = args.showFavs
     }
@@ -52,5 +52,20 @@ class SiteListPresenter(view: BaseView) : BasePresenter(view), AnkoLogger {
     fun openLogin() {
         app.userStore.logout()
         Navigation.findNavController(this.view?.requireView()!!).navigate(R.id.action_siteListView_to_loginView)
+    }
+
+    fun toggleSearch() {
+        search = !search
+
+        if (!search) {
+            siteListView.hideSearch()
+            loadSites()
+        } else {
+            siteListView.showSearch()
+        }
+    }
+
+    fun doSearch(text: String) {
+        view?.showSites(app.siteStore.searchForName(text))
     }
 }

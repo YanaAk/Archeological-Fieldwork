@@ -76,7 +76,7 @@ class FirebaseSiteStore(val context: Context) : SiteStore, AnkoLogger {
                 val fileName = File(image)
                 val imageName = fileName.name
 
-                var imageRef = st.child(site.id + '/' + imageName)
+                val imageRef = st.child(site.id + '/' + imageName)
                 val baos = ByteArrayOutputStream()
                 val bitmap = readImageFromPath(context, image)
 
@@ -125,6 +125,10 @@ class FirebaseSiteStore(val context: Context) : SiteStore, AnkoLogger {
             db.child(DB_SITES).child(persistedSite.id).setValue(persistedSite)
             info("Added rating $rating for site: $site")
         }
+    }
+
+    override fun searchForName(text: String): List<Site> {
+        return sites.filter { it.name.contains(text) }
     }
 
     private fun fetchSites(sitesReady: () -> Unit) {

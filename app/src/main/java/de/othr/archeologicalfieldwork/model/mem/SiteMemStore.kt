@@ -64,6 +64,10 @@ class SiteMemStore : SiteStore, AnkoLogger {
         return sites
     }
 
+    override fun searchForName(text: String): List<Site> {
+        return sites.filter { it.name.contains(text) }
+    }
+
     override fun addRating(site: Site, user: User, rating: Float) {
         val persistedSite = this.findById(site.id)
 
